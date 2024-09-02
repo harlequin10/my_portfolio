@@ -318,12 +318,14 @@ section {
   
 }
 .details-container-2:hover .project-img-2 {
+  display: flex;
   position: fixed; /* Take the image out of the normal flow */
   top: 50%; /* Center vertically */
   left: 50%; /* Center horizontally */
   transform: translate(-50%, -50%) scale(.8); /* Center the image and scale it */
   
 }
+
 .section-container {
   gap: 4rem;
   height: 80%;
