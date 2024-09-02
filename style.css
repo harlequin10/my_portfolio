@@ -322,7 +322,7 @@ section {
   top: 50%; /* Center vertically */
   left: 50%; /* Center horizontally */
   transform: translate(-50%, -50%) scale(.8); /* Center the image and scale it */
-  z-index: 9999; /* Ensure it appears above other content */
+  
 }
 .section-container {
   gap: 4rem;
