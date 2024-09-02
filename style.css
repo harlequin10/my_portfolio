@@ -303,8 +303,27 @@ section {
   border: rgb(53, 53, 53) 0.1rem solid;
   border-color: rgb(163, 163, 163);
   text-align: center;
+  display: inline-block; /* Make sure it fits the content */
+  
 }
-
+.details-container-2 {
+  padding: 1rem;
+  flex: 1;
+  background: white;
+  
+  border: rgb(53, 53, 53) 0.1rem solid;
+  border-color: rgb(163, 163, 163);
+  text-align: center;
+ 
+  
+}
+.details-container-2:hover .project-img-2 {
+  position: fixed; /* Take the image out of the normal flow */
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%) scale(.8); /* Center the image and scale it */
+  z-index: 9999; /* Ensure it appears above other content */
+}
 .section-container {
   gap: 4rem;
   height: 80%;
@@ -343,6 +362,17 @@ section {
   gap: 2.5rem;
   justify-content: space-around;
 }
+.article-container-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Responsive equal-sized columns */
+  gap: 2rem;
+  text-align: initial;
+  align-items: stretch; /* Ensure all items stretch to the full height of the grid area */
+}
+
+
+
+
 
 article {
   display: flex;
@@ -371,7 +401,13 @@ article .icon {
   width: 90%;
   height: 90%;
 }
-
+.project-img-2 {
+  margin-top: 7px;
+  margin-left: 10px;
+  width: 90%;
+  height: 90%;
+  transition: transform 0.3s ease-in-out;
+}
 .project-title {
   margin: 1rem;
   color: black;
