@@ -408,6 +408,7 @@ article .icon {
   margin-left: 10px;
   width: 90%;
   height: 90%;
+  transition: width 2s, height 4s;
   
 }
 .project-title {
