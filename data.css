@@ -1,0 +1,396 @@
+/* General Body Style */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #ffffff; /* Light blue background */
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Container Styling */
+.container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+h1.text-center {
+    font-size: 36px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    
+}
+
+
+/* Button Style */
+button, .btn {
+    background-color: #a90505; /* Light blue color */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px; /* Rounded button */
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+button:hover, .btn:hover {
+    background-color: #f86f6f; /* Slightly darker blue */
+    color: rgb(253, 253, 253);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Stylish Checkbox (with better alignment and padding) */
+.styled-checkbox {
+    position: absolute;
+    opacity: 0;
+}
+
+.styled-checkbox + label {
+    position: relative;
+    padding-left: 45px; /* Increased to give more space between the checkbox and the text */
+    cursor: pointer;
+    font-size: 16px;
+    user-select: none;
+    
+    padding: 10px 15px; /* Adjusted padding for better alignment */
+    border-radius: 20px;
+    color: white;
+    display: flex;
+    align-items: center; /* Centers the text vertically */
+}
+
+.styled-checkbox + label:before {
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    border: 2px solid white;
+    border-radius: 4px;
+    background: transparent;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.styled-checkbox:checked + label:before {
+    background-color: white;
+    border-color: white;
+}
+
+.styled-checkbox:checked + label:after {
+    content: "\2713"; /* Checkmark */
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ffffff;
+    font-size: 18px;
+}
+
+
+/* Checkbox Group */
+.checkbox-group {
+    display: flex;
+    margin-left: 50px;
+    margin-right: 50px;
+    justify-content: space-evenly; /* Center the checkboxes horizontally */
+    gap: 15px; /* Maintain a gap between the checkboxes */
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+
+
+/* Container for the checkbox group */
+.checkbox-group-container {
+     /* Light blue background for the container */
+    /* padding: 20px; */
+    padding-top: 20px;
+    padding-bottom: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
+
+/* Align the checkbox group */
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap; /* Allows checkboxes to wrap onto the next line if necessary */
+    justify-content: space-evenly;
+    gap: 15px; /* Maintain a gap between the checkboxes */
+}
+
+/* Stylish Checkbox (with better alignment and padding) */
+.styled-checkbox {
+    position: absolute;
+    opacity: 0;
+}
+
+.styled-checkbox + label {
+    position: relative;
+    padding-left: 35px; /* Adjusted to give more space for the checkbox */
+    cursor: pointer;
+    font-size: 16px;
+    user-select: none;
+    background-color: #000000;
+    /* padding: 10px 15px; Adjusted padding for better alignment */
+    border-radius: 20px;
+    color: white;
+    display: flex;
+    align-items: center; /* Centers the text vertically */
+}
+
+.styled-checkbox + label:before {
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    border: 2px solid white;
+    border-radius: 4px;
+    background: transparent;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.styled-checkbox:checked + label:before {
+    background-color: white;
+    border-color: white;
+}
+
+.styled-checkbox:checked + label:after {
+    content: "\2713"; /* Checkmark */
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #000000;
+    font-size: 18px;
+}
+
+
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+thead th {
+    background-color: #89CFF0; /* Header light blue */
+    color: white;
+    padding: 12px;
+    font-size: 14px;
+    border-bottom: 2px solid #6DAEDB;
+}
+
+tfoot th {
+    background-color: #E0F7FF; /* Footer soft blue */
+    color: #333;
+    padding: 12px;
+}
+
+/* Specifically targeting DataTables' row class */
+table.dataTable tbody tr {
+    background-color: #CCE5FF !important; /* Light blue background for all rows */
+}
+
+table.dataTable tbody tr:nth-child(odd) {
+    background-color: #D6EBFF !important; /* Alternate lighter blue */
+}
+
+table.dataTable tbody tr:hover {
+    background-color: #B0D4FF !important; /* Slightly darker blue on hover */
+}
+
+
+
+tbody td {
+    padding: 12px;
+    color: #555;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+
+
+/* Input Search */
+.search-row input {
+    border: 1px solid #080808;
+    padding: 8px;
+    border-radius: 10px;
+    width: 120%;
+    font-size: 14px;
+    margin: 5px 0;
+    transition: border-color 0.3s ease;
+}
+
+.search-row input:focus {
+    border-color: #919699;
+    outline: none;
+}
+
+.search-row span.dt-column-order {
+    display: none;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+/* Table Column Alignment */
+table td:first-child, table th:first-child {
+    text-align: center; /* Center the first column header and data */
+    vertical-align: middle;
+    justify-content: center; /* Center vertically */
+}
+
+/* Pagination and Info */
+.dataTables_paginate {
+    margin-top: 10px;
+}
+
+.dataTables_info {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Placeholder Styling */
+::placeholder {
+    color: #999;
+    font-size: 12px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .checkbox-group {
+        flex-direction: column;
+    }
+
+    .nav-tabs {
+        display: block;
+        width: 100%;
+    }
+
+    .nav-item {
+        width: 100%;
+    }
+
+    .nav-link {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Tab Styles */
+.nav-tabs {
+    border-bottom: 2px solid #ddd;
+}
+
+.nav-link {
+    color: #555;
+    border: none;
+    background-color: transparent;
+    padding: 10px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-link:hover, .nav-link.active {
+    background-color: #89CFF0;
+    color: white;
+}
+
+.tab-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    margin-top: 10px;
+}
+
+/* Pagination and Info */
+.dataTables_paginate {
+    margin-top: 10px;
+}
+
+.dataTables_info {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Placeholder Styling */
+::placeholder {
+    color: #999;
+    font-size: 12px;
+}
+
+/* Table Column Alignment */
+table td:first-child, table th:first-child {
+    text-align: center; /* Center the first column header and data */
+    vertical-align: middle; /* Center vertically */
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.col-md-6.text-end {
+    text-align: right;
+}
+
+
+/* Cute Pagination Styling */
+div.dataTables_wrapper div.dataTables_paginate .paginate_button {
+    background-color: #f0f8ff !important; /* Light blue background */
+    border: 2px solid #89CFF0 !important;
+    color: #333 !important;
+    padding: 8px 15px !important;
+    margin: 0 5px !important;
+    border-radius: 50% !important;
+    transition: background-color 0.3s, box-shadow 0.3s !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+}
+
+div.dataTables_wrapper div.dataTables_paginate .paginate_button:hover {
+    background-color: #89CFF0 !important; /* Hover background */
+    color: white !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+div.dataTables_wrapper div.dataTables_paginate .paginate_button.current {
+    background-color: #89CFF0 !important;
+    color: white !important;
+    border-color: #6DAEDB !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+    cursor: default !important;
+}
+
+div.dataTables_wrapper div.dataTables_paginate .paginate_button.disabled {
+    background-color: #e0e0e0 !important;
+    color: #888 !important;
+    border-color: #ddd !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+}
+
+/* Add transition to page number navigation buttons */
+div.dataTables_wrapper div.dataTables_paginate .paginate_button {
+    transition: all 0.3s ease-in-out !important;
+}
+
+/* Cute pagination ellipses (...) style */
+div.dataTables_wrapper div.dataTables_paginate .ellipsis {
+    color: #89CFF0 !important;
+    font-weight: bold !important;
+}
