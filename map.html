@@ -1,0 +1,2790 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Coral Reef Assessment Information System - Sarangani Bay</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css"/>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+            color: #0c4a6e;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0284c7 0%, #0e7490 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            color: #fcd34d;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .logo p {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .stats-container {
+            margin-left: auto;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.2);
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            min-width: 100px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-box .number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fcd34d;
+            line-height: 1.2;
+        }
+
+        .stat-box .label {
+            font-size: 0.75rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 1rem auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 1rem;
+            flex: 1;
+            min-height: 0;
+            width: 100%;
+        }
+
+        .map-section {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 0;
+        }
+
+        .map-controls {
+            padding: 0.75rem;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-weight: 500;
+            color: #475569;
+            font-size: 0.8rem;
+        }
+
+        .filter-group select, .filter-group input {
+            padding: 0.4rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        .year-range {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .year-range input {
+            width: 70px;
+            text-align: center;
+        }
+
+        .year-range span {
+            font-size: 0.7rem;
+            color: #64748b;
+        }
+
+        #map {
+            flex: 1;
+            width: 100%;
+            min-height: 0;
+            z-index: 1;
+        }
+
+        .marker-cluster-small {
+            background-color: rgba(2, 132, 199, 0.6);
+        }
+        .marker-cluster-small div {
+            background-color: rgba(2, 132, 199, 0.8);
+            color: white;
+        }
+
+        .marker-cluster-medium {
+            background-color: rgba(245, 158, 11, 0.6);
+        }
+        .marker-cluster-medium div {
+            background-color: rgba(245, 158, 11, 0.8);
+            color: white;
+        }
+
+        .marker-cluster-large {
+            background-color: rgba(220, 38, 38, 0.6);
+        }
+        .marker-cluster-large div {
+            background-color: rgba(220, 38, 38, 0.8);
+            color: white;
+        }
+
+        .marker-cluster {
+            background-clip: padding-box;
+            border-radius: 20px;
+        }
+        .marker-cluster div {
+            width: 30px;
+            height: 30px;
+            margin-left: 5px;
+            margin-top: 5px;
+            text-align: center;
+            border-radius: 15px;
+            font: 12px "Poppins", sans-serif;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .legend-panel {
+            padding: 0.75rem;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            flex-shrink: 0;
+        }
+
+        .legend-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .legend-grid {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .color-box {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .color-excellent { background: #2e7d32; }
+        .color-good { background: #4caf50; }
+        .color-fair { background: #ffb74d; }
+        .color-poor { background: #f44336; }
+
+        .health-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .badge-excellent { background: #2e7d32; }
+        .badge-good { background: #4caf50; }
+        .badge-fair { background: #ffb74d; color: #0c4a6e; }
+        .badge-poor { background: #f44336; }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            height: 100%;
+            min-height: 0;
+            overflow-y: auto;
+            padding-right: 0.25rem;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.25rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .card-header i {
+            color: #0284c7;
+            font-size: 1.25rem;
+        }
+
+        .card-header h3 {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        #selectedAssessment {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 0.25rem;
+        }
+
+        #selectedAssessment::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        #selectedAssessment::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+
+        #selectedAssessment::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+        }
+
+        .assessment-detail {
+            margin-bottom: 1rem;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #475569;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            margin-top: 0.25rem;
+            font-size: 0.9rem;
+        }
+
+        .contributor-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .contributor-tag {
+            background: #e2e8f0;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: #0c4a6e;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .contributor-tag i {
+            font-size: 0.7rem;
+            color: #0284c7;
+        }
+
+        .uploader-badge {
+            background: #0284c7;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .uploader-badge i {
+            font-size: 0.7rem;
+            color: white;
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            margin: 0.75rem 0;
+        }
+
+        .photo-item {
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 0.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .photo-item:hover {
+            transform: scale(1.02);
+            background: #e2e8f0;
+        }
+
+        .photo-item i {
+            font-size: 1.25rem;
+            color: #0284c7;
+        }
+
+        .photo-item span {
+            display: block;
+            font-size: 0.7rem;
+            margin-top: 0.25rem;
+            word-break: break-all;
+        }
+
+        .file-link {
+            display: block;
+            background: #f1f5f9;
+            padding: 0.6rem;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #0c4a6e;
+            margin: 0.5rem 0;
+            transition: background 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .file-link:hover {
+            background: #e2e8f0;
+        }
+
+        .file-link i {
+            margin-right: 0.5rem;
+            color: #0284c7;
+        }
+
+        .chart-container {
+            height: 200px;
+            margin: 0.75rem 0;
+            position: relative;
+        }
+
+        .time-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .trend-info {
+            font-size: 0.7rem;
+            color: #64748b;
+            text-align: center;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: #f8fafc;
+            border-radius: 6px;
+        }
+
+        .year-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            justify-content: center;
+        }
+
+        .year-stat {
+            background: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            border: 1px solid #e2e8f0;
+            cursor: help;
+        }
+
+        .year-stat strong {
+            color: #0284c7;
+        }
+
+        .assessment-badge {
+            background: #e2e8f0;
+            color: #475569;
+            padding: 0.1rem 0.3rem;
+            border-radius: 10px;
+            font-size: 0.6rem;
+            margin-left: 0.3rem;
+        }
+
+        .clear-site-btn {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: all 0.2s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .clear-site-btn:hover {
+            background: #e2e8f0;
+            border-color: #0284c7;
+        }
+
+        .active-site-indicator {
+            background: #e0f2fe;
+            padding: 0.5rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 3px solid #0284c7;
+        }
+
+        .species-list-container {
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 0.5rem 0;
+            padding-right: 0.25rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .species-list-container::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .species-list-container::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+
+        .species-list-container::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+        }
+
+        .species-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.6rem;
+            background: #f0f9ff;
+            font-weight: 600;
+            font-size: 0.8rem;
+            border-bottom: 2px solid #0284c7;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .species-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.6rem;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .species-item:hover {
+            background: #f1f5f9;
+            transform: translateX(4px);
+        }
+
+        .species-item.active {
+            background: #e0f2fe;
+            border-left: 4px solid #0284c7;
+        }
+
+        .species-code {
+            font-weight: 600;
+            color: #0c4a6e;
+        }
+
+        .species-fullname {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-left: 0.5rem;
+        }
+
+        .species-coverage {
+            font-weight: 600;
+            color: #0284c7;
+        }
+
+        .species-locations {
+            font-size: 0.65rem;
+            color: #475569;
+            margin-top: 0.2rem;
+        }
+
+        .clear-filter-btn {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.7rem;
+            cursor: pointer;
+            margin-left: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .clear-filter-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .filter-indicator {
+            background: #f0f9ff;
+            padding: 0.5rem;
+            border-radius: 6px;
+            margin: 0.5rem 0;
+            font-size: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .species-badge-small {
+            display: inline-block;
+            background: #e2e8f0;
+            color: #0c4a6e;
+            padding: 0.15rem 0.4rem;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            margin-right: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .species-detail-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .species-detail-content {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .species-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0284c7;
+            line-height: 1.2;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #475569;
+        }
+
+        .transect-item {
+            background: #f8fafc;
+            padding: 0.6rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-left: 4px solid #0284c7;
+        }
+
+        .transect-item:hover {
+            background: #e2e8f0;
+        }
+
+        .transect-coords {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin: 0.25rem 0;
+        }
+
+        .coverage-bar {
+            height: 5px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            margin: 0.4rem 0;
+            overflow: hidden;
+        }
+
+        .coverage-fill {
+            height: 100%;
+            background: #0284c7;
+            border-radius: 3px;
+        }
+
+        .depth-section {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .depth-title {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 2px solid;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .depth-deep .depth-title { border-bottom-color: #0e7490; }
+        .depth-shallow .depth-title { border-bottom-color: #0891b2; }
+
+        .depth-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            color: white;
+        }
+
+        .depth-deep-badge { background: #0e7490; }
+        .depth-shallow-badge { background: #0891b2; }
+
+        .species-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed #e2e8f0;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .species-row:hover {
+            background: #e8f0fe;
+        }
+
+        .species-row:last-child {
+            border-bottom: none;
+        }
+
+        .species-info {
+            flex: 1;
+        }
+
+        .species-code-name {
+            font-weight: 600;
+            color: #0c4a6e;
+        }
+
+        .species-full-name {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-left: 0.5rem;
+        }
+
+        .species-cover {
+            color: #0284c7;
+            font-weight: 600;
+            min-width: 50px;
+            text-align: right;
+        }
+
+        .transect-summary {
+            display: flex;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+        }
+
+        .depth-summary {
+            flex: 1;
+            padding: 0.4rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+        }
+
+        .depth-summary.deep {
+            background: rgba(14, 116, 144, 0.1);
+            border-left: 3px solid #0e7490;
+        }
+
+        .depth-summary.shallow {
+            background: rgba(8, 145, 178, 0.1);
+            border-left: 3px solid #0891b2;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .empty-state {
+            color: #64748b;
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.85rem;
+        }
+
+        .health-summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .health-stat {
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
+        .health-stat .count {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .health-stat .label {
+            font-size: 0.65rem;
+            color: #475569;
+        }
+
+        .sample-sites {
+            background: #f0f9ff;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            font-size: 0.8rem;
+        }
+
+        .site-tag {
+            display: inline-block;
+            background: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            margin: 0.2rem;
+            font-size: 0.7rem;
+            border-left: 3px solid;
+            cursor: pointer;
+        }
+
+        .site-tag.excellent { border-left-color: #2e7d32; }
+        .site-tag.good { border-left-color: #4caf50; }
+        .site-tag.fair { border-left-color: #ffb74d; }
+        .site-tag.poor { border-left-color: #f44336; }
+
+        .map-filter-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            font-size: 0.8rem;
+            z-index: 1000;
+            display: none;
+            border-left: 4px solid #0284c7;
+        }
+
+        .map-filter-indicator.show {
+            display: block;
+        }
+
+        .mean-badge {
+            display: inline-block;
+            background: #0284c7;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            margin-left: 0.5rem;
+        }
+
+        .location-species-toggle {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid #cbd5e1;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .toggle-btn.active {
+            background: #0284c7;
+            color: white;
+            border-color: #0284c7;
+        }
+
+        .species-distribution {
+            margin: 1rem 0;
+            height: 150px;
+        }
+
+        .top-species-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .top-species-card {
+            background: #f8fafc;
+            padding: 0.75rem;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .top-species-card:hover {
+            transform: scale(1.02);
+            background: #e2e8f0;
+        }
+
+        .top-species-name {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #0c4a6e;
+        }
+
+        .top-species-count {
+            font-size: 0.9rem;
+            color: #0284c7;
+            font-weight: 700;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+                overflow-y: auto;
+            }
+            
+            .stats-container {
+                margin-left: 0;
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .sidebar {
+                max-height: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-fish"></i>
+                <div>
+                    <h1>Sarangani Bay Coral Reef Information System</h1>
+                    <p>Protected Seascapes Assessment & Monitoring</p>
+                </div>
+            </div>
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="number" id="totalAssessments">0</div>
+                    <div class="label">Total Assessments</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number" id="avgCoverage">0%</div>
+                    <div class="label">Avg. Coral Cover</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number" id="totalSpecies">0</div>
+                    <div class="label">Total Species</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="map-section">
+            <div class="map-controls">
+                <div class="filter-group">
+                    <label><i class="fas fa-city"></i> Municipality:</label>
+                    <select id="municipalityFilter">
+                        <option value="all">All Municipalities</option>
+                        <option value="Maasim">Maasim</option>
+                        <option value="Kiamba">Kiamba</option>
+                        <option value="Maitum">Maitum</option>
+                        <option value="Glan">Glan</option>
+                        <option value="Alabel">Alabel</option>
+                        <option value="Malapatan">Malapatan</option>
+                        <option value="General Santos">General Santos</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label><i class="fas fa-calendar-alt"></i> Year Range:</label>
+                    <div class="year-range">
+                        <input type="number" id="yearFrom" value="2020" min="2015" max="2024" step="1">
+                        <span>to</span>
+                        <input type="number" id="yearTo" value="2024" min="2015" max="2024" step="1">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label><i class="fas fa-chart-line"></i> Health:</label>
+                    <select id="healthFilter">
+                        <option value="all">All Categories</option>
+                        <option value="excellent">Excellent (>65%)</option>
+                        <option value="good">Good (45-65%)</option>
+                        <option value="fair">Fair (25-45%)</option>
+                        <option value="poor">Poor (<25%)</option>
+                    </select>
+                </div>
+            </div>
+            <div id="map"></div>
+            
+            <div class="map-filter-indicator" id="mapFilterIndicator">
+                <span id="filterSpeciesName"></span>
+                <button class="clear-filter-btn" onclick="clearSpeciesFilter()" style="margin-left: 0.5rem;">✕ Clear</button>
+            </div>
+            
+            <div class="legend-panel">
+                <div class="legend-title">
+                    <i class="fas fa-palette"></i> Legend
+                </div>
+                <div class="legend-grid">
+                    <div class="legend-item">
+                        <div class="color-box color-excellent"></div>
+                        <span>Excellent (>65% cover)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="color-box color-good"></div>
+                        <span>Good (45-65% cover)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="color-box color-fair"></div>
+                        <span>Fair (25-45% cover)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="color-box color-poor"></div>
+                        <span>Poor (<25% cover)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="info-card">
+                <div class="card-header">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>Assessment Details</h3>
+                </div>
+                <div id="selectedAssessment">
+                    <div class="empty-state">
+                        <i class="fas fa-map-marker-alt" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <p>Click a marker on the map to view assessment details</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div class="card-header">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Coral Cover Trends</h3>
+                </div>
+                <div class="time-controls">
+                    <select id="trendLevel">
+                        <option value="municipality">Municipality Level</option>
+                        <option value="barangay">Barangay Level</option>
+                        <option value="site">Specific Site</option>
+                    </select>
+                </div>
+                <div class="chart-container">
+                    <canvas id="trendChart"></canvas>
+                </div>
+                <div class="trend-info" id="trendInfo">
+                    <i class="fas fa-chart-line"></i> Loading trend data...
+                </div>
+                <div class="year-stats" id="yearStats"></div>
+                
+                <!-- Active Site Indicator and Clear Button -->
+                <div id="activeSiteIndicator" style="display: none;" class="active-site-indicator">
+                    <span><i class="fas fa-map-marker-alt"></i> <strong id="activeSiteName"></strong></span>
+                    <button onclick="clearSiteFilter()" style="background: none; border: none; color: #0284c7; cursor: pointer;">
+                        <i class="fas fa-times-circle"></i> Change
+                    </button>
+                </div>
+                
+                <button onclick="clearSiteFilter()" id="clearSiteBtn" style="display: none;" class="clear-site-btn">
+                    <i class="fas fa-arrow-left"></i> Back to All Locations
+                </button>
+            </div>
+
+            <div class="info-card">
+                <div class="card-header">
+                    <i class="fas fa-fish"></i>
+                    <h3>Coral Species Summary</h3>
+                </div>
+                <div class="filter-group" style="margin-bottom: 0.75rem;">
+                    <select id="speciesArea" style="width: 100%;">
+                        <option value="all">All Areas</option>
+                        <option value="Maasim">Maasim</option>
+                        <option value="Kiamba">Kiamba</option>
+                        <option value="Maitum">Maitum</option>
+                        <option value="Glan">Glan</option>
+                        <option value="Alabel">Alabel</option>
+                        <option value="Malapatan">Malapatan</option>
+                        <option value="General Santos">General Santos</option>
+                    </select>
+                </div>
+                
+                <div class="location-species-toggle">
+                    <button class="toggle-btn active" id="listViewBtn" onclick="showSpeciesListView()">Species List</button>
+                    <button class="toggle-btn" id="distViewBtn" onclick="showSpeciesDistribution()">Distribution</button>
+                </div>
+                
+                <div id="speciesFilterIndicator" class="filter-indicator" style="display: none;">
+                    <span>Showing sites with: <strong id="activeFilterSpecies"></strong></span>
+                    <button class="clear-filter-btn" onclick="clearSpeciesFilter()">Clear</button>
+                </div>
+                
+                <div id="speciesListView">
+                    <div class="species-header">
+                        <span>Species Code</span>
+                        <span>Mean Coverage</span>
+                    </div>
+                    <div class="species-list-container" id="speciesList"></div>
+                    <div style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #e2e8f0;">
+                        <div class="detail-label">Average Species per Barangay</div>
+                        <div class="detail-value" style="font-size: 1.25rem; font-weight: 700;" id="avgSpecies">0</div>
+                    </div>
+                </div>
+                
+                <div id="speciesDistributionView" style="display: none;">
+                    <div class="species-distribution">
+                        <canvas id="speciesPieChart"></canvas>
+                    </div>
+                    <div class="top-species-grid" id="topSpeciesGrid"></div>
+                    <div style="margin-top: 0.75rem; padding: 0.75rem; background: #f0f9ff; border-radius: 10px;">
+                        <div class="detail-label">Total Species Found</div>
+                        <div class="detail-value" style="font-size: 1.25rem; font-weight: 700;" id="totalSpeciesCount">0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-card">
+                <div class="card-header">
+                    <i class="fas fa-heartbeat"></i>
+                    <h3>Reef Health Summary</h3>
+                </div>
+                <div class="health-summary">
+                    <div class="health-stat">
+                        <div class="count" style="color: #2e7d32;" id="excellentCount">0</div>
+                        <div class="label">Excellent</div>
+                    </div>
+                    <div class="health-stat">
+                        <div class="count" style="color: #4caf50;" id="goodCount">0</div>
+                        <div class="label">Good</div>
+                    </div>
+                    <div class="health-stat">
+                        <div class="count" style="color: #ffb74d;" id="fairCount">0</div>
+                        <div class="label">Fair</div>
+                    </div>
+                    <div class="health-stat">
+                        <div class="count" style="color: #f44336;" id="poorCount">0</div>
+                        <div class="label">Poor</div>
+                    </div>
+                </div>
+                
+                <div class="sample-sites">
+                    <strong>Sample Excellent Sites:</strong><br>
+                    <span class="site-tag excellent" onclick="filterBySite('Gumasa')">Gumasa, Glan (82%)</span>
+                    <span class="site-tag excellent" onclick="filterBySite('Kamanga')">Kamanga, Maasim (76%)</span>
+                    <span class="site-tag excellent" onclick="filterBySite('Tambilil')">Tambilil, Kiamba (79%)</span>
+                </div>
+                
+                <div class="sample-sites">
+                    <strong>Sample Poor Sites:</strong><br>
+                    <span class="site-tag poor" onclick="filterBySite('Poblacion')">Poblacion, Glan (18%)</span>
+                    <span class="site-tag poor" onclick="filterBySite('Lumasal')">Lumasal, Maasim (22%)</span>
+                    <span class="site-tag poor" onclick="filterBySite('Baluan')">Baluan, Gensan (15%)</span>
+                </div>
+                
+                <div style="margin-top: 0.75rem; padding: 0.5rem; background: #f8fafc; border-radius: 8px; font-size: 0.75rem;">
+                    <i class="fas fa-info-circle" style="color: #0284c7;"></i>
+                    Click on any species to see where it's found
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="transectModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h2 style="color: #0c4a6e; margin-bottom: 1rem;" id="transectModalTitle">Transect Details</h2>
+            <div id="transectDetails"></div>
+        </div>
+    </div>
+
+    <div class="species-detail-modal" id="speciesDetailModal">
+        <div class="species-detail-content">
+            <button class="modal-close" onclick="closeSpeciesModal()">&times;</button>
+            <h2 style="color: #0c4a6e; margin-bottom: 1rem;" id="selectedSpeciesName">Species Name</h2>
+            
+            <div class="species-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="speciesTotalCount">0</div>
+                    <div class="stat-label">Avg Coverage</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="speciesLocations">0</div>
+                    <div class="stat-label">Locations</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="speciesAssessments">0</div>
+                    <div class="stat-label">Transects</div>
+                </div>
+            </div>
+            
+            <div style="margin: 1rem 0;">
+                <h3 style="font-size: 0.9rem; color: #475569; margin-bottom: 0.5rem;">Found in:</h3>
+                <div id="speciesLocationList"></div>
+            </div>
+            
+            <div style="margin: 1rem 0;">
+                <h3 style="font-size: 0.9rem; color: #475569; margin-bottom: 0.5rem;">Distribution by depth:</h3>
+                <div id="speciesDepthDistribution"></div>
+            </div>
+            
+            <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                <button onclick="filterMapBySpecies(document.getElementById('selectedSpeciesName').textContent.split(' ')[0])" 
+                        style="flex:1; background:#0284c7; color:white; border:none; padding:0.6rem; border-radius:6px; cursor:pointer;">
+                    <i class="fas fa-filter"></i> Show Only This Species
+                </button>
+                <button onclick="clearSpeciesFilter()" 
+                        style="flex:1; background:#64748b; color:white; border:none; padding:0.6rem; border-radius:6px; cursor:pointer;">
+                    <i class="fas fa-times"></i> Clear Filter
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        // Global variables
+        let map;
+        let trendChart;
+        let speciesPieChart;
+        let markerCluster;
+        let allAssessments = [];
+        let currentSpeciesFilter = null;
+        let currentSiteFilter = null;
+
+        // Sample contributors data
+        const contributorsList = [
+            { name: "Dr. Maria Santos", role: "Principal Investigator", institution: "MSU-Gensan" },
+            { name: "Prof. Juan Dela Cruz", role: "Research Coordinator", institution: "UP Mindanao" },
+            { name: "Dr. Anna Reyes", role: "Marine Biologist", institution: "DENR-Sarangani" },
+            { name: "Mr. Roberto Fernandez", role: "Field Researcher", institution: "BFAR Region 12" },
+            { name: "Ms. Christine Lopez", role: "Data Analyst", institution: "MSU-Gensan" },
+            { name: "Dr. Michael Tan", role: "Coral Specialist", institution: "UP Diliman" },
+            { name: "Ms. Jennifer Cruz", role: "Field Assistant", institution: "LGU Sarangani" },
+            { name: "Mr. Eduardo Santos", role: "GIS Specialist", institution: "NAMRIA" },
+            { name: "Dr. Patricia Lee", role: "Research Associate", institution: "MSU-Gensan" },
+            { name: "Mr. Anthony Gomez", role: "Dive Master", institution: "Sarangani Dive Center" }
+        ];
+
+        const uploaders = [
+            { name: "Maria Santos", role: "Researcher", email: "maria.santos@msugensan.edu.ph", institution: "MSU-Gensan" },
+            { name: "Juan Dela Cruz", role: "Project Lead", email: "juan.dc@upmindanao.edu.ph", institution: "UP Mindanao" },
+            { name: "Anna Reyes", role: "Data Manager", email: "anna.reyes@denr.gov.ph", institution: "DENR" },
+            { name: "Roberto Fernandez", role: "Field Coordinator", email: "rfernandez@bfar.gov.ph", institution: "BFAR" },
+            { name: "Christine Lopez", role: "Research Assistant", email: "clopez@msugensan.edu.ph", institution: "MSU-Gensan" }
+        ];
+
+        // Your provided coordinates
+        const maitumBarangays = [
+            {name: "Kalaong", coords: [6.087594280200079, 124.46806928182298]},
+            {name: "Kiambing", coords: [6.034835809422468, 124.51702263223599]},
+            {name: "Maguling", coords: [6.1005965183882696, 124.40735115227112]},
+            {name: "Mindupok", coords: [6.1058017819158215, 124.42507511277135]},
+            {name: "Old Poblacion", coords: [6.044841222908998, 124.5010157447317]},
+            {name: "Pinol", coords: [6.127300990561465, 124.38083248868162]},
+        ];
+
+        const kiambaBarangays = [
+            {name: "Datu Dani", coords: [5.973115445055588, 124.72005269235332]},
+            {name: "Katubao", coords: [5.951379371256638, 124.83525623592354]},
+            {name: "Kayupo", coords: [5.938517129076871, 124.76848079438088]},
+            {name: "Kling", coords: [5.936291923928696, 124.72359878346656]},
+            {name: "Lagundi", coords: [5.948543181118545, 124.71596389145918]},
+            {name: "Lebe", coords: [6.0256789512477775, 124.54718042191276]},
+            {name: "Lomuyon", coords: [5.915177058534611, 124.78525331393774]},
+            {name: "Luma", coords: [6.029272016768473, 124.53311885627946]},
+            {name: "Nalus", coords: [6.055673906399023, 124.6028937555441]},
+            {name: "Poblacion", coords: [5.988600463439991, 124.62792789310214]},
+            {name: "Salakit", coords: [6.0607737184156205, 124.58271454522252]},
+            {name: "Suli", coords: [5.999877049248923, 124.64661178247168]},
+            {name: "Tambilil", coords: [6.022757904301827, 124.70268640205988]},
+        ];
+
+        const maasimBarangays = [
+            {name: "Colon", coords: [5.876711678133074, 125.01068563653412]},
+            {name: "Daliao", coords: [5.873176849717516, 124.93382592097055]},
+            {name: "Kabatiol", coords: [5.887823580337997, 124.9778653149425]},
+            {name: "Kablacan", coords: [5.906839132473367, 124.95640937892671]},
+            {name: "Kamanga", coords: [5.913884634726062, 125.04970811321864]},
+            {name: "Kanalo", coords: [5.886175981684314, 124.87919379847386]},
+            {name: "Lumasal", coords: [5.9573118808159835, 124.85673676406273]},
+            {name: "Lumatil", coords: [5.8921428143400725, 124.91220123071939]},
+            {name: "Malbang", coords: [5.859841856779651, 125.0305110959085]},
+            {name: "Pananag", coords: [5.922782421920739, 124.86764006297673]},
+            {name: "Poblacion", coords: [5.864218934329429, 124.99018210609333]},
+        ];
+
+        const gensanBarangays = [
+            {name: "Baluan", coords: [6.108036992195785, 125.2164066129273]},
+            {name: "Bula", coords: [6.105349635979536, 125.19537517081778]},
+            {name: "Buayan", coords: [6.115616584604812, 125.23396338697862]},
+            {name: "Calumpang", coords: [6.080376241674691, 125.14308440013555]},
+            {name: "Dadiangas South", coords: [6.110122656014989, 125.17504803933805]},
+            {name: "Dadiangas West", coords: [6.108733968175175, 125.16667734261789]},
+            {name: "Labangal", coords: [6.1028216981125665, 125.1375541227646]},
+            {name: "Siguel", coords: [5.983511549305647, 125.07114205020278]},
+            {name: "Tambler", coords: [6.017492894872394, 125.0941912112718]},
+        ];
+
+        const alabelBarangays = [
+            {name: "Kawas", coords: [6.06061615715034, 125.28568709173818]},
+            {name: "Ladol", coords: [6.085833272129737, 125.27762980376737]},
+            {name: "Maribulan", coords: [6.11563835853835, 125.26432464211065]},
+        ];
+
+        const malapatanBarangays = [
+            {name: "Lun Masla", coords: [6.019936191372292, 125.3504928434228]},
+            {name: "Lun Padidu", coords: [6.057813551959574, 125.31821392333907]},
+            {name: "Poblacion", coords: [5.9517857819166045, 125.31088156651474]},
+            {name: "Sapu Masla", coords: [5.912558653529233, 125.3342377373749]},
+            {name: "Tuyan", coords: [5.986646519819048, 125.3284874399544]},
+        ];
+
+        const glanBarangays = [
+            {name: "Baliton", coords: [5.744122780143004, 125.25331567754299]},
+            {name: "Batulaki", coords: [5.574863025421921, 125.32255657232409]},
+            {name: "Big Margus", coords: [5.616397356649422, 125.31752296807079]},
+            {name: "Burias", coords: [5.721951412312254, 125.26839006422122]},
+            {name: "Cablalan", coords: [5.773186794222912, 125.22083136218149]},
+            {name: "Glan Padidu", coords: [5.8495972302449095, 125.23308521953703]},
+            {name: "Gumasa", coords: [5.791049717669668, 125.1901719050216]},
+            {name: "Kapatan", coords: [5.89465154564396, 125.25959438195179]},
+            {name: "Lago", coords: [5.878324842097771, 125.21992618882277]},
+            {name: "Pangyan", coords: [5.695391133358135, 125.28921509931085]},
+            {name: "Poblacion", coords: [5.822194934564346, 125.20402638091555]},
+            {name: "San Jose", coords: [5.593857896358364, 125.29968975577518]},
+            {name: "Small Margus", coords: [5.661382078116635, 125.3082281121265]},
+            {name: "Taluya", coords: [5.810885721124474, 125.18704797594353]},
+            {name: "Tango", coords: [5.863025044442699, 125.23951195750392]},
+            {name: "Tapon", coords: [5.824388852195789, 125.2524251511553]},
+        ];
+
+        // Complete species list with codes and full names
+        const speciesData = [
+            { code: "POC", fullName: "POCILLOPORA (POC)", subCategory: "POCILLOPORA (POC)", majorCategory: "POCILLOPORIDAE", deep: 7.2, shallow: 17.6, mean: 12.4 },
+            { code: "ACT", fullName: "ACROPORA PLATE (ACT)", subCategory: "ACROPORA PLATE (ACT)", majorCategory: "ACROPORIDAE", deep: 1.66, shallow: 2.77, mean: 2.21 },
+            { code: "ACB", fullName: "ACROPORA BRANCHING (ACB)", subCategory: "ACROPORA BRANCHING (ACB)", majorCategory: "ACROPORIDAE", deep: 0, shallow: 2.84, mean: 1.42 },
+            { code: "PORM", fullName: "PORITES MASSIVE (PORM)", subCategory: "PORITES MASSIVE (PORM)", majorCategory: "PORITIDAE", deep: 1.85, shallow: 2.15, mean: 2 },
+            { code: "ECHI", fullName: "ECHINOPORA (ECHI)", subCategory: "ECHINOPORA (ECHI)", majorCategory: "FAVIIDAE", deep: 2.4, shallow: 0, mean: 1.2 },
+            { code: "CE", fullName: "OTHER ENCRUSTING CORALS (CE)", subCategory: "OTHER ENCRUSTING CORALS (CE)", majorCategory: "OTHER CORALS WITH NO SPECIFIC GENUS", deep: 0.92, shallow: 0.15, mean: 0.19 },
+            { code: "EUP", fullName: "EUPHYLLIA (EUP)", subCategory: "EUPHYLLIA (EUP)", majorCategory: "EUPHYLLIDAE", deep: 1.29, shallow: 0.08, mean: 0.69 },
+            { code: "PLAT", fullName: "PLATYGYRA (PLAT)", subCategory: "PLATYGYRA (PLAT)", majorCategory: "FAVIIDAE", deep: 0.37, shallow: 0.46, mean: 0.41 },
+            { code: "HEL", fullName: "HELIOPORA (HEL)", subCategory: "HELIOPORA (HEL)", majorCategory: "NON-SCLERACTINIAN CORALS", deep: 0.92, shallow: 0.15, mean: 0.54 },
+            { code: "CMR", fullName: "FUNGIA (CMR)", subCategory: "FUNGIA (CMR)", majorCategory: "FUNGIIDAE", deep: 1.11, shallow: 0.23, mean: 0.67 },
+            { code: "SYM", fullName: "SYMPHYLLIA (SYM)", subCategory: "SYMPHYLLIA (SYM)", majorCategory: "MUSSIDAE", deep: 0.18, shallow: 0.31, mean: 0.25 },
+            { code: "FOT", fullName: "OTHER FREE LIVING FUNGIIDS (FOT)", subCategory: "OTHER FREE LIVING FUNGIIDS (FOT)", majorCategory: "FUNGIIDAE", deep: 0.37, shallow: 0.38, mean: 0.38 },
+            { code: "CM", fullName: "OTHER MASSIVE CORALS (CM)", subCategory: "OTHER MASSIVE CORALS (CM)", majorCategory: "OTHER CORALS WITH NO SPECIFIC GENUS", deep: 0.18, shallow: 0.23, mean: 0.21 },
+            { code: "COS", fullName: "COSCINAREA (COS)", subCategory: "COSCINAREA (COS)", majorCategory: "SIDERASTTREIDAE", deep: 0, shallow: 0.54, mean: 0.27 },
+            { code: "COE", fullName: "COELOSERIS (COE)", subCategory: "COELOSERIS (COE)", majorCategory: "AGARICIIDAE", deep: 0, shallow: 0.38, mean: 0.19 },
+            { code: "ACD", fullName: "ACROPORA DIGITATE (ACD)", subCategory: "ACROPORA DIGITATE (ACD)", majorCategory: "ACROPORIDAE", deep: 0, shallow: 0.08, mean: 0.04 },
+            { code: "MONTB", fullName: "MONTIPORA BRANCHING (MONTB)", subCategory: "MONTIPORA BRANCHING (MONTB)", majorCategory: "ACROPORIDAE", deep: 0, shallow: 0.15, mean: 0.08 },
+            { code: "MONTF", fullName: "MONTIPORA FOLIOSE (MONTF)", subCategory: "MONTIPORA FOLIOSE (MONTF)", majorCategory: "ACROPORIDAE", deep: 0, shallow: 0.31, mean: 0.15 },
+            { code: "PACF", fullName: "PACHYSERIS FOLIOSE (PACF)", subCategory: "PACHYSERIS FOLIOSE (PACF)", majorCategory: "AGARICIIDAE", deep: 0.18, shallow: 0, mean: 0.09 },
+            { code: "FVI", fullName: "FAVITES (FVI)", subCategory: "FAVITES (FVI)", majorCategory: "FAVIIDAE", deep: 0.37, shallow: 0.08, mean: 0.22 },
+            { code: "GONIA", fullName: "GONIASTREA (GONIA)", subCategory: "GONIASTREA (GONIA)", majorCategory: "FAVIIDAE", deep: 0.18, shallow: 0, mean: 0.09 },
+            { code: "MON", fullName: "MONTASTREA (MON)", subCategory: "MONTASTREA (MON)", majorCategory: "FAVIIDAE", deep: 0, shallow: 0.08, mean: 0.04 },
+            { code: "OULO", fullName: "OULOPHYLLIA (OULO)", subCategory: "OULOPHYLLIA (OULO)", majorCategory: "FAVIIDAE", deep: 0, shallow: 0.08, mean: 0.04 },
+            { code: "LOB", fullName: "LOBOPHYLLIA (LOB)", subCategory: "LOBOPHYLLIA (LOB)", majorCategory: "MUSSIDAE", deep: 0, shallow: 0.31, mean: 0.16 },
+            { code: "SER", fullName: "SERIATOPORA (SER)", subCategory: "SERIATOPORA (SER)", majorCategory: "POCILLOPORIDAE", deep: 0, shallow: 0.08, mean: 0.04 },
+            { code: "GONIO", fullName: "GONIOPORA (GONIO)", subCategory: "GONIOPORA (GONIO)", majorCategory: "PORITIDAE", deep: 0.37, shallow: 0, mean: 0.18 },
+            { code: "PORB", fullName: "PORITES BRANCHING (PORB)", subCategory: "PORITES BRANCHING (PORB)", majorCategory: "PORITIDAE", deep: 0.37, shallow: 0, mean: 0.18 },
+            { code: "GAL", fullName: "GALAXEA (GAL)", subCategory: "GALAXEA (GAL)", majorCategory: "OCULINIDAE", deep: 0, shallow: 0.15, mean: 0.08 }
+        ];
+
+        const methodologies = ['Point Intercept Transect', 'Line Intercept Transect', 'Photo Quadrat', 'Video Transect'];
+        
+        // Generate assessment data with multiple assessments per year for each site
+        function generateAssessmentsFromCoordinates() {
+            let assessments = [];
+            let id = 1;
+
+            // Define health categories
+            const healthCategories = [
+                { name: 'excellent', range: [65, 85], color: '#2e7d32' },
+                { name: 'good', range: [45, 64], color: '#4caf50' },
+                { name: 'fair', range: [25, 44], color: '#ffb74d' },
+                { name: 'poor', range: [10, 24], color: '#f44336' }
+            ];
+
+            function createAssessmentsForMunicipality(municipality, barangays, numAssessmentsPerBarangay = 4) {
+                barangays.forEach(barangay => {
+                    // Create multiple assessments per year for each site for ALL years 2020-2024
+                    const years = [2020, 2021, 2022, 2023, 2024];
+                    
+                    years.forEach(year => {
+                        // Create 2-3 assessments per year for each site
+                        const numPerYear = 2 + Math.floor(Math.random() * 2);
+                        
+                        for (let i = 0; i < numPerYear; i++) {
+                            const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+                            const day = String(Math.floor(Math.random() * 28) + 1).padStart(2, '0');
+                            
+                            // Assign health category based on barangay name
+                            let healthCategory;
+                            if (barangay.name === 'Gumasa' || barangay.name === 'Kamanga' || barangay.name === 'Tambilil') {
+                                healthCategory = healthCategories[0];
+                            } else if (barangay.name === 'Katubao' || barangay.name === 'Kling' || barangay.name === 'Lumasal') {
+                                healthCategory = healthCategories[1];
+                            } else if (barangay.name === 'Poblacion' || barangay.name === 'Baluan' || barangay.name === 'Lun Padidu') {
+                                healthCategory = healthCategories[3];
+                            } else {
+                                healthCategory = healthCategories[Math.floor(Math.random() * healthCategories.length)];
+                            }
+                            
+                            // Select random uploader and contributors
+                            const uploader = uploaders[Math.floor(Math.random() * uploaders.length)];
+                            const numContributors = 2 + Math.floor(Math.random() * 4);
+                            const shuffledContributors = [...contributorsList].sort(() => 0.5 - Math.random());
+                            const contributors = shuffledContributors.slice(0, numContributors);
+                            
+                            const numTransects = 3;
+                            const transects = [];
+                            
+                            for (let t = 0; t < numTransects; t++) {
+                                const startOffset = [(Math.random() - 0.5) * 0.002, (Math.random() - 0.5) * 0.002];
+                                const endOffset = [(Math.random() - 0.5) * 0.002, (Math.random() - 0.5) * 0.002];
+                                
+                                // Generate DEEP component
+                                const numDeepSpecies = 8 + Math.floor(Math.random() * 5);
+                                const shuffledDeep = [...speciesData].sort(() => 0.5 - Math.random());
+                                const selectedDeepSpecies = shuffledDeep.slice(0, numDeepSpecies);
+                                
+                                let deepCover = 0;
+                                const targetRange = healthCategory.range;
+                                const targetDeepCover = (targetRange[0] + Math.random() * (targetRange[1] - targetRange[0])) * 0.4;
+                                
+                                const deepSpecies = selectedDeepSpecies.map(s => {
+                                    const coverValue = s.deep * (targetDeepCover / 10) * (0.8 + Math.random() * 0.4);
+                                    deepCover += coverValue;
+                                    return {
+                                        code: s.code,
+                                        subCategory: s.subCategory,
+                                        majorCategory: s.majorCategory,
+                                        cover: Math.round(coverValue * 10) / 10
+                                    };
+                                });
+                                
+                                // Generate SHALLOW component
+                                const numShallowSpecies = 8 + Math.floor(Math.random() * 5);
+                                const shuffledShallow = [...speciesData].sort(() => 0.5 - Math.random());
+                                const selectedShallowSpecies = shuffledShallow.slice(0, numShallowSpecies);
+                                
+                                let shallowCover = 0;
+                                const targetShallowCover = (targetRange[0] + Math.random() * (targetRange[1] - targetRange[0])) * 0.6;
+                                
+                                const shallowSpecies = selectedShallowSpecies.map(s => {
+                                    const coverValue = s.shallow * (targetShallowCover / 15) * (0.8 + Math.random() * 0.4);
+                                    shallowCover += coverValue;
+                                    return {
+                                        code: s.code,
+                                        subCategory: s.subCategory,
+                                        majorCategory: s.majorCategory,
+                                        cover: Math.round(coverValue * 10) / 10
+                                    };
+                                });
+                                
+                                const meanTransectCover = Math.round(((deepCover + shallowCover) / 2) * 10) / 10;
+                                
+                                transects.push({
+                                    id: `T${t + 1}`,
+                                    start: [
+                                        barangay.coords[0] + startOffset[0],
+                                        barangay.coords[1] + startOffset[1]
+                                    ],
+                                    end: [
+                                        barangay.coords[0] + endOffset[0],
+                                        barangay.coords[1] + endOffset[1]
+                                    ],
+                                    totalCover: meanTransectCover,
+                                    deep: {
+                                        cover: Math.round(deepCover * 10) / 10,
+                                        species: deepSpecies.sort((a, b) => b.cover - a.cover)
+                                    },
+                                    shallow: {
+                                        cover: Math.round(shallowCover * 10) / 10,
+                                        species: shallowSpecies.sort((a, b) => b.cover - a.cover)
+                                    },
+                                    speciesCount: deepSpecies.length + shallowSpecies.length
+                                });
+                            }
+                            
+                            const totalCover = transects.reduce((sum, t) => sum + t.totalCover, 0);
+                            const meanCover = Math.round((totalCover / transects.length) * 10) / 10;
+                            
+                            const numPhotos = 2 + Math.floor(Math.random() * 3);
+                            const photos = [];
+                            for (let p = 0; p < numPhotos; p++) {
+                                photos.push(`${barangay.name.toLowerCase()}_${year}_${p + 1}.jpg`);
+                            }
+                            
+                            const allSpecies = new Set();
+                            transects.forEach(t => {
+                                t.deep.species.forEach(s => {
+                                    allSpecies.add(JSON.stringify({
+                                        code: s.code,
+                                        subCategory: s.subCategory,
+                                        majorCategory: s.majorCategory
+                                    }));
+                                });
+                                t.shallow.species.forEach(s => {
+                                    allSpecies.add(JSON.stringify({
+                                        code: s.code,
+                                        subCategory: s.subCategory,
+                                        majorCategory: s.majorCategory
+                                    }));
+                                });
+                            });
+                            
+                            const assessmentSpecies = Array.from(allSpecies).map(s => JSON.parse(s));
+                            
+                            let healthClass;
+                            if (meanCover >= 65) healthClass = 'excellent';
+                            else if (meanCover >= 45) healthClass = 'good';
+                            else if (meanCover >= 25) healthClass = 'fair';
+                            else healthClass = 'poor';
+                            
+                            assessments.push({
+                                id: id++,
+                                municipality: municipality,
+                                barangay: barangay.name,
+                                location: `${barangay.name} Reef`,
+                                coordinates: barangay.coords,
+                                assessmentDate: `${year}-${month}-${day}`,
+                                methodology: methodologies[Math.floor(Math.random() * methodologies.length)],
+                                coralCover: meanCover,
+                                healthClass: healthClass,
+                                transects: transects,
+                                species: assessmentSpecies,
+                                photos: photos,
+                                thesisFile: `${municipality.toLowerCase()}_coral_assessment_${year}.pdf`,
+                                uploader: uploader,
+                                contributors: contributors,
+                                institution: uploader.institution
+                            });
+                        }
+                    });
+                });
+            }
+
+            // Create assessments for each municipality
+            createAssessmentsForMunicipality('Maasim', maasimBarangays, 4);
+            createAssessmentsForMunicipality('Kiamba', kiambaBarangays, 3);
+            createAssessmentsForMunicipality('Maitum', maitumBarangays, 4);
+            createAssessmentsForMunicipality('Glan', glanBarangays, 3);
+            createAssessmentsForMunicipality('Alabel', alabelBarangays, 4);
+            createAssessmentsForMunicipality('Malapatan', malapatanBarangays, 3);
+            createAssessmentsForMunicipality('General Santos', gensanBarangays, 3);
+
+            return assessments;
+        }
+
+        // Helper function to get filtered assessments based on current filters
+        function getFilteredAssessments() {
+            const municipality = document.getElementById('municipalityFilter').value;
+            const yearFrom = parseInt(document.getElementById('yearFrom').value);
+            const yearTo = parseInt(document.getElementById('yearTo').value);
+            const health = document.getElementById('healthFilter').value;
+
+            let filtered = allAssessments;
+
+            if (municipality !== 'all') {
+                filtered = filtered.filter(a => a.municipality === municipality);
+            }
+
+            // Filter by year range
+            filtered = filtered.filter(a => {
+                const year = parseInt(a.assessmentDate.split('-')[0]);
+                return year >= yearFrom && year <= yearTo;
+            });
+
+            // Filter by health category
+            if (health !== 'all') {
+                filtered = filtered.filter(a => {
+                    if (health === 'excellent' && a.coralCover >= 65) return true;
+                    if (health === 'good' && a.coralCover >= 45 && a.coralCover < 65) return true;
+                    if (health === 'fair' && a.coralCover >= 25 && a.coralCover < 45) return true;
+                    if (health === 'poor' && a.coralCover < 25) return true;
+                    return false;
+                });
+            }
+            // If health === 'all', no filtering needed - all assessments pass
+
+            if (currentSpeciesFilter) {
+                filtered = filtered.filter(assessment => {
+                    return assessment.species.some(s => s.code === currentSpeciesFilter);
+                });
+            }
+
+            if (currentSiteFilter) {
+                filtered = filtered.filter(assessment => {
+                    return assessment.location === currentSiteFilter || assessment.barangay === currentSiteFilter;
+                });
+            }
+
+            return filtered;
+        }
+
+        // Update trend chart based on filters
+        function updateTrendChart() {
+            const level = document.getElementById('trendLevel').value;
+            const filtered = getFilteredAssessments();
+            
+            // Get year range from filters
+            const yearFrom = parseInt(document.getElementById('yearFrom').value);
+            const yearTo = parseInt(document.getElementById('yearTo').value);
+            
+            // Generate years array based on range
+            const years = [];
+            for (let y = yearFrom; y <= yearTo; y++) {
+                years.push(y);
+            }
+            
+            // Group by year and calculate mean coral cover
+            const yearlyData = {};
+            years.forEach(y => {
+                yearlyData[y] = { sum: 0, count: 0, values: [] };
+            });
+            
+            filtered.forEach(a => {
+                const year = parseInt(a.assessmentDate.split('-')[0]);
+                if (yearlyData[year]) {
+                    yearlyData[year].sum += a.coralCover;
+                    yearlyData[year].count++;
+                    yearlyData[year].values.push(a.coralCover);
+                }
+            });
+            
+            const averages = years.map(y => {
+                if (yearlyData[y].count > 0) {
+                    return (yearlyData[y].sum / yearlyData[y].count).toFixed(1);
+                }
+                return null;
+            });
+            
+            // Create year stats HTML showing number of assessments per year
+            let yearStatsHtml = '';
+            years.forEach(y => {
+                if (yearlyData[y].count > 0) {
+                    const avg = (yearlyData[y].sum / yearlyData[y].count).toFixed(1);
+                    const assessmentCount = yearlyData[y].count;
+                    const valuesList = yearlyData[y].values.join(', ');
+                    yearStatsHtml += `
+                        <div class="year-stat" title="Individual assessment values: ${valuesList}">
+                            <strong>${y}</strong>: ${avg}% 
+                            <span class="assessment-badge">${assessmentCount} assessment${assessmentCount > 1 ? 's' : ''}</span>
+                        </div>
+                    `;
+                } else {
+                    yearStatsHtml += `
+                        <div class="year-stat" style="opacity:0.5;">
+                            <strong>${y}</strong>: No data
+                        </div>
+                    `;
+                }
+            });
+            document.getElementById('yearStats').innerHTML = yearStatsHtml;
+            
+            // Determine trend info text with assessment count
+            let trendInfoText = '';
+            if (currentSiteFilter) {
+                const siteAssessments = filtered.filter(a => a.location === currentSiteFilter || a.barangay === currentSiteFilter);
+                const totalAssessments = siteAssessments.length;
+                const yearsWithData = years.filter(y => yearlyData[y].count > 0);
+                trendInfoText = `📊 ${currentSiteFilter} | ${totalAssessments} total assessment${totalAssessments > 1 ? 's' : ''} across ${yearsWithData.length} year${yearsWithData.length > 1 ? 's' : ''}`;
+                
+                // Show active site indicator and clear button
+                document.getElementById('activeSiteIndicator').style.display = 'flex';
+                document.getElementById('activeSiteName').textContent = currentSiteFilter;
+                document.getElementById('clearSiteBtn').style.display = 'block';
+            } else {
+                document.getElementById('activeSiteIndicator').style.display = 'none';
+                document.getElementById('clearSiteBtn').style.display = 'none';
+                
+                if (level === 'municipality') {
+                    const municipality = document.getElementById('municipalityFilter').value;
+                    const totalAssessments = filtered.length;
+                    if (municipality !== 'all') {
+                        trendInfoText = `📊 ${municipality} Municipality | ${totalAssessments} total assessments (${yearFrom}-${yearTo})`;
+                    } else {
+                        trendInfoText = `📊 All Municipalities | ${totalAssessments} total assessments (${yearFrom}-${yearTo})`;
+                    }
+                } else if (level === 'barangay') {
+                    trendInfoText = `📊 Barangay Level Trend (${yearFrom}-${yearTo})`;
+                } else {
+                    trendInfoText = `📊 Selected Area Trend (${yearFrom}-${yearTo})`;
+                }
+            }
+            
+            document.getElementById('trendInfo').innerHTML = `<i class="fas fa-chart-line"></i> ${trendInfoText}`;
+            
+            if (trendChart) {
+                trendChart.data.labels = years.map(y => y.toString());
+                trendChart.data.datasets[0].data = averages;
+                trendChart.update();
+            }
+        }
+
+        // Function to filter by specific site (called when clicking assessment marker)
+        function filterBySite(siteName) {
+            const assessment = allAssessments.find(a => a.barangay === siteName || a.location.includes(siteName));
+            if (assessment) {
+                currentSiteFilter = assessment.location;
+                showAssessmentDetails(assessment.id);
+                if (map) {
+                    map.setView(assessment.coordinates, 14);
+                }
+                updateTrendChart();
+                updateStatistics();
+                updateSpeciesSummary();
+                
+                // Show toast notification
+                const toast = document.createElement('div');
+                toast.style.position = 'fixed';
+                toast.style.bottom = '20px';
+                toast.style.right = '20px';
+                toast.style.background = '#0284c7';
+                toast.style.color = 'white';
+                toast.style.padding = '10px 20px';
+                toast.style.borderRadius = '8px';
+                toast.style.zIndex = '10000';
+                toast.style.fontSize = '14px';
+                toast.innerHTML = `<i class="fas fa-map-marker-alt"></i> Now viewing ${assessment.location}`;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3000);
+            }
+        }
+
+        // Function to show trend for specific assessment
+        function showTrendForAssessment(assessmentId) {
+            const assessment = allAssessments.find(a => a.id === assessmentId);
+            if (assessment) {
+                currentSiteFilter = assessment.location;
+                updateTrendChart();
+                updateStatistics();
+                updateSpeciesSummary();
+                
+                // Update the trend level dropdown to show "Specific Site"
+                document.getElementById('trendLevel').value = 'site';
+                
+                // Show toast notification
+                const toast = document.createElement('div');
+                toast.style.position = 'fixed';
+                toast.style.bottom = '20px';
+                toast.style.right = '20px';
+                toast.style.background = '#0284c7';
+                toast.style.color = 'white';
+                toast.style.padding = '10px 20px';
+                toast.style.borderRadius = '8px';
+                toast.style.zIndex = '10000';
+                toast.style.fontSize = '14px';
+                toast.innerHTML = `<i class="fas fa-chart-line"></i> Now showing trend for ${assessment.location}`;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3000);
+            }
+        }
+
+        // Clear site filter - GO BACK TO ALL LOCATIONS
+        function clearSiteFilter() {
+            currentSiteFilter = null;
+            document.getElementById('trendLevel').value = 'municipality';
+            updateTrendChart();
+            updateStatistics();
+            updateSpeciesSummary();
+            
+            // Show toast notification
+            const toast = document.createElement('div');
+            toast.style.position = 'fixed';
+            toast.style.bottom = '20px';
+            toast.style.right = '20px';
+            toast.style.background = '#64748b';
+            toast.style.color = 'white';
+            toast.style.padding = '10px 20px';
+            toast.style.borderRadius = '8px';
+            toast.style.zIndex = '10000';
+            toast.style.fontSize = '14px';
+            toast.innerHTML = `<i class="fas fa-globe"></i> Showing all locations. Click any marker to view specific site.`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Update statistics based on filters
+        function updateStatistics() {
+            const filtered = getFilteredAssessments();
+            
+            document.getElementById('totalAssessments').textContent = filtered.length;
+            
+            if (filtered.length > 0) {
+                const avgCover = (filtered.reduce((sum, a) => sum + a.coralCover, 0) / filtered.length).toFixed(1);
+                document.getElementById('avgCoverage').textContent = avgCover + '%';
+            } else {
+                document.getElementById('avgCoverage').textContent = '0%';
+            }
+            
+            const uniqueSpecies = new Set();
+            filtered.forEach(a => {
+                a.species.forEach(s => uniqueSpecies.add(s.code));
+            });
+            document.getElementById('totalSpecies').textContent = uniqueSpecies.size;
+            
+            const excellent = filtered.filter(a => a.coralCover >= 65).length;
+            const good = filtered.filter(a => a.coralCover >= 45 && a.coralCover < 65).length;
+            const fair = filtered.filter(a => a.coralCover >= 25 && a.coralCover < 45).length;
+            const poor = filtered.filter(a => a.coralCover < 25).length;
+            
+            document.getElementById('excellentCount').textContent = excellent;
+            document.getElementById('goodCount').textContent = good;
+            document.getElementById('fairCount').textContent = fair;
+            document.getElementById('poorCount').textContent = poor;
+        }
+
+        // Helper function to get full species name from code
+        function getFullSpeciesName(code) {
+            const species = speciesData.find(s => s.code === code);
+            return species ? species.subCategory : code;
+        }
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, generating assessment data...');
+            
+            allAssessments = generateAssessmentsFromCoordinates();
+            console.log(`Generated ${allAssessments.length} assessments`);
+
+            updateStatistics();
+
+            initializeMap();
+            initializeCharts();
+            initializeSpeciesPieChart();
+
+            updateSpeciesSummary();
+
+            // Add event listeners for year range inputs
+            document.getElementById('yearFrom').addEventListener('change', function() {
+                filterMarkers();
+                updateStatistics();
+                updateSpeciesSummary();
+                updateTrendChart();
+            });
+            document.getElementById('yearTo').addEventListener('change', function() {
+                filterMarkers();
+                updateStatistics();
+                updateSpeciesSummary();
+                updateTrendChart();
+            });
+            document.getElementById('municipalityFilter').addEventListener('change', function() {
+                filterMarkers();
+                updateStatistics();
+                updateSpeciesSummary();
+                updateTrendChart();
+            });
+            document.getElementById('healthFilter').addEventListener('change', function() {
+                filterMarkers();
+                updateStatistics();
+                updateSpeciesSummary();
+                updateTrendChart();
+            });
+            document.getElementById('speciesArea').addEventListener('change', function() {
+                updateSpeciesSummary();
+                updateSpeciesDistribution();
+            });
+            document.getElementById('trendLevel').addEventListener('change', function() {
+                if (this.value !== 'site') {
+                    currentSiteFilter = null;
+                }
+                updateTrendChart();
+            });
+        });
+
+        function filterMarkers() {
+            const filtered = getFilteredAssessments();
+            addMarkersToCluster(filtered);
+            console.log(`Filtered to ${filtered.length} assessments`);
+            updateFilterIndicator();
+        }
+
+        function filterMapBySpecies(speciesCode) {
+            currentSpeciesFilter = speciesCode;
+            currentSiteFilter = null;
+            
+            const species = speciesData.find(s => s.code === speciesCode);
+            if (species) {
+                document.getElementById('filterSpeciesName').textContent = `Showing sites with ${species.code}`;
+                document.getElementById('activeFilterSpecies').textContent = species.code;
+                document.getElementById('speciesFilterIndicator').style.display = 'flex';
+                document.getElementById('mapFilterIndicator').classList.add('show');
+                
+                document.querySelectorAll('.species-item').forEach(item => {
+                    item.classList.remove('active');
+                    if (item.dataset.species === speciesCode) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+            
+            filterMarkers();
+            updateStatistics();
+            updateSpeciesSummary();
+            updateTrendChart();
+        }
+
+        function clearSpeciesFilter() {
+            currentSpeciesFilter = null;
+            document.getElementById('speciesFilterIndicator').style.display = 'none';
+            document.getElementById('mapFilterIndicator').classList.remove('show');
+            
+            document.querySelectorAll('.species-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            filterMarkers();
+            updateStatistics();
+            updateSpeciesSummary();
+            updateTrendChart();
+        }
+
+        function updateFilterIndicator() {
+            const indicator = document.getElementById('mapFilterIndicator');
+            if (currentSpeciesFilter) {
+                indicator.classList.add('show');
+            } else {
+                indicator.classList.remove('show');
+            }
+        }
+
+        function initializeMap() {
+            try {
+                map = L.map('map').setView([6.0, 124.9], 9);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors',
+                    maxZoom: 18
+                }).addTo(map);
+
+                markerCluster = L.markerClusterGroup({
+                    iconCreateFunction: function(cluster) {
+                        const markers = cluster.getAllChildMarkers();
+                        const count = markers.length;
+                        
+                        let clusterClass = 'marker-cluster-small';
+                        if (count >= 6 && count <= 15) {
+                            clusterClass = 'marker-cluster-medium';
+                        } else if (count >= 16) {
+                            clusterClass = 'marker-cluster-large';
+                        }
+                        
+                        return L.divIcon({
+                            html: '<div><span>' + count + '</span></div>',
+                            className: 'marker-cluster ' + clusterClass,
+                            iconSize: [40, 40]
+                        });
+                    },
+                    maxClusterRadius: 50,
+                    spiderfyOnMaxZoom: true,
+                    showCoverageOnHover: true,
+                    zoomToBoundsOnClick: true
+                });
+
+                addMarkersToCluster(allAssessments);
+                map.addLayer(markerCluster);
+                
+                console.log('Map initialized successfully');
+                
+            } catch (error) {
+                console.error('Error initializing map:', error);
+                document.getElementById('map').innerHTML = '<div style="padding: 2rem; text-align: center; color: red;">Error loading map. Please refresh.</div>';
+            }
+        }
+
+        function addMarkersToCluster(assessments) {
+            markerCluster.clearLayers();
+
+            assessments.forEach(assessment => {
+                let color;
+                if (assessment.coralCover >= 65) color = '#2e7d32';
+                else if (assessment.coralCover >= 45) color = '#4caf50';
+                else if (assessment.coralCover >= 25) color = '#ffb74d';
+                else color = '#f44336';
+                
+                const marker = L.circleMarker(assessment.coordinates, {
+                    radius: 8,
+                    fillColor: color,
+                    color: 'white',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                });
+                
+                let badgeClass = '';
+                if (assessment.coralCover >= 65) badgeClass = 'badge-excellent';
+                else if (assessment.coralCover >= 45) badgeClass = 'badge-good';
+                else if (assessment.coralCover >= 25) badgeClass = 'badge-fair';
+                else badgeClass = 'badge-poor';
+                
+                const speciesCodes = assessment.species.map(s => s.code).join(', ');
+                
+                marker.bindPopup(`
+                    <div style="font-family: 'Poppins', sans-serif; min-width: 220px;">
+                        <h3 style="margin:0 0 8px; color:#0c4a6e; font-size:16px;">${assessment.location}</h3>
+                        <p style="margin:0 0 5px; font-size:13px;"><strong>Barangay:</strong> ${assessment.barangay}</p>
+                        <p style="margin:0 0 5px; font-size:13px;"><strong>Municipality:</strong> ${assessment.municipality}</p>
+                        <p style="margin:0 0 5px; font-size:13px;"><strong>Date:</strong> ${assessment.assessmentDate}</p>
+                        <p style="margin:0 0 5px; font-size:13px;">
+                            <strong>Coral Cover:</strong> ${assessment.coralCover}% 
+                            <span class="health-badge ${badgeClass}" style="margin-left: 0.5rem;">${assessment.healthClass.toUpperCase()}</span>
+                        </p>
+                        <p style="margin:0 0 5px; font-size:13px;"><strong>Uploaded by:</strong> ${assessment.uploader.name}</p>
+                        <p style="margin:0 0 5px; font-size:13px;"><strong>Species:</strong> ${assessment.species.length}</p>
+                        <p style="margin:0 0 5px; font-size:13px;"><strong>Species Codes:</strong> ${speciesCodes}</p>
+                        <p style="margin:0 0 5px; font-size:13px;"><strong>Transects:</strong> ${assessment.transects.length}</p>
+                        <button onclick="showAssessmentDetails(${assessment.id})" 
+                                style="background:#0284c7; color:white; border:none; padding:8px 12px; border-radius:5px; cursor:pointer; width:100%; font-size:13px; margin-top:8px;">
+                            View Full Details
+                        </button>
+                        <button onclick="showTrendForAssessment(${assessment.id})" 
+                                style="background:#0e7490; color:white; border:none; padding:6px 10px; border-radius:5px; cursor:pointer; width:100%; font-size:12px; margin-top:5px;">
+                            <i class="fas fa-chart-line"></i> View Trend
+                        </button>
+                    </div>
+                `);
+                
+                markerCluster.addLayer(marker);
+            });
+        }
+
+        function initializeCharts() {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            
+            const years = [2020, 2021, 2022, 2023, 2024];
+            const initialData = [null, null, null, null, null];
+            
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years.map(y => y.toString()),
+                    datasets: [{
+                        label: 'Average Coral Cover %',
+                        data: initialData,
+                        borderColor: '#0284c7',
+                        backgroundColor: 'rgba(2, 132, 199, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#0284c7',
+                        pointBorderColor: 'white',
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { 
+                            mode: 'index', 
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return `Average Coral Cover: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { color: 'rgba(0,0,0,0.05)' },
+                            title: {
+                                display: true,
+                                text: 'Coral Cover %',
+                                font: { size: 11 }
+                            }
+                        },
+                        x: { 
+                            grid: { display: false },
+                            title: {
+                                display: true,
+                                text: 'Year',
+                                font: { size: 11 }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Initial update
+            updateTrendChart();
+        }
+
+        function initializeSpeciesPieChart() {
+            const ctx = document.getElementById('speciesPieChart').getContext('2d');
+            
+            speciesPieChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: [
+                            '#0284c7',
+                            '#0e7490',
+                            '#0891b2',
+                            '#06b6d4',
+                            '#22d3ee'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { 
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw}% avg cover`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+        }
+
+        function showSpeciesListView() {
+            document.getElementById('listViewBtn').classList.add('active');
+            document.getElementById('distViewBtn').classList.remove('active');
+            document.getElementById('speciesListView').style.display = 'block';
+            document.getElementById('speciesDistributionView').style.display = 'none';
+        }
+
+        function showSpeciesDistribution() {
+            document.getElementById('distViewBtn').classList.add('active');
+            document.getElementById('listViewBtn').classList.remove('active');
+            document.getElementById('speciesListView').style.display = 'none';
+            document.getElementById('speciesDistributionView').style.display = 'block';
+            updateSpeciesDistribution();
+        }
+
+        function updateSpeciesDistribution() {
+            const area = document.getElementById('speciesArea').value;
+            const filteredAssessments = getFilteredAssessments();
+            const areaFiltered = area === 'all' 
+                ? filteredAssessments 
+                : filteredAssessments.filter(a => a.municipality === area);
+            
+            const speciesTotals = {};
+            const speciesCounts = {};
+            
+            areaFiltered.forEach(a => {
+                a.transects.forEach(t => {
+                    t.deep.species.forEach(s => {
+                        if (!speciesTotals[s.code]) {
+                            speciesTotals[s.code] = 0;
+                            speciesCounts[s.code] = 0;
+                        }
+                        speciesTotals[s.code] += s.cover;
+                        speciesCounts[s.code] += 1;
+                    });
+                    t.shallow.species.forEach(s => {
+                        if (!speciesTotals[s.code]) {
+                            speciesTotals[s.code] = 0;
+                            speciesCounts[s.code] = 0;
+                        }
+                        speciesTotals[s.code] += s.cover;
+                        speciesCounts[s.code] += 1;
+                    });
+                });
+            });
+            
+            const speciesMeans = {};
+            Object.keys(speciesTotals).forEach(code => {
+                speciesMeans[code] = speciesTotals[code] / speciesCounts[code];
+            });
+            
+            const sortedSpecies = Object.entries(speciesMeans)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+            
+            if (speciesPieChart) {
+                speciesPieChart.data.labels = sortedSpecies.map(s => s[0]);
+                speciesPieChart.data.datasets[0].data = sortedSpecies.map(s => Math.round(s[1]));
+                speciesPieChart.update();
+            }
+            
+            const topSpeciesGrid = document.getElementById('topSpeciesGrid');
+            let gridHtml = '';
+            sortedSpecies.slice(0, 4).forEach(s => {
+                const fullSpecies = speciesData.find(sp => sp.code === s[0]) || { code: s[0] };
+                gridHtml += `
+                    <div class="top-species-card" onclick="filterMapBySpecies('${fullSpecies.code}')">
+                        <div class="top-species-name">${s[0]}</div>
+                        <div class="top-species-count">${Math.round(s[1])}%</div>
+                        <div style="font-size: 0.65rem; color: #64748b;">avg cover</div>
+                    </div>
+                `;
+            });
+            topSpeciesGrid.innerHTML = gridHtml;
+            
+            document.getElementById('totalSpeciesCount').textContent = Object.keys(speciesMeans).length;
+        }
+
+        window.showAssessmentDetails = function(assessmentId) {
+            const assessment = allAssessments.find(a => a.id === assessmentId);
+            if (!assessment) return;
+
+            const container = document.getElementById('selectedAssessment');
+            
+            let healthClass, healthText, badgeClass;
+            if (assessment.coralCover >= 65) {
+                healthClass = 'color-excellent';
+                healthText = 'Excellent';
+                badgeClass = 'badge-excellent';
+            } else if (assessment.coralCover >= 45) {
+                healthClass = 'color-good';
+                healthText = 'Good';
+                badgeClass = 'badge-good';
+            } else if (assessment.coralCover >= 25) {
+                healthClass = 'color-fair';
+                healthText = 'Fair';
+                badgeClass = 'badge-fair';
+            } else {
+                healthClass = 'color-poor';
+                healthText = 'Poor';
+                badgeClass = 'badge-poor';
+            }
+            
+            let contributorsHtml = '';
+            assessment.contributors.forEach(contributor => {
+                contributorsHtml += `
+                    <span class="contributor-tag">
+                        <i class="fas fa-user"></i>
+                        ${contributor.name} (${contributor.role})
+                    </span>
+                `;
+            });
+            
+            let transectsHtml = '';
+            assessment.transects.forEach((t, index) => {
+                const transectStr = JSON.stringify(t).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                
+                const topDeepSpecies = t.deep.species.slice(0, 2).map(s => `${s.code}: ${s.cover}%`).join(', ');
+                const topShallowSpecies = t.shallow.species.slice(0, 2).map(s => `${s.code}: ${s.cover}%`).join(', ');
+                
+                transectsHtml += `
+                    <div class="transect-item" onclick='showTransectDetails(${transectStr})'>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <strong>${t.id}</strong>
+                            <span style="font-size:0.75rem; color:#475569;">
+                                Mean: ${t.totalCover}%
+                                <span class="mean-badge">avg</span>
+                            </span>
+                        </div>
+                        <div class="transect-coords">
+                            Start: ${t.start[0].toFixed(4)}, ${t.start[1].toFixed(4)}<br>
+                            End: ${t.end[0].toFixed(4)}, ${t.end[1].toFixed(4)}
+                        </div>
+                        
+                        <div class="transect-summary">
+                            <div class="depth-summary deep">
+                                <strong>Deep:</strong> ${t.deep.cover}%<br>
+                                <small>${topDeepSpecies}</small>
+                            </div>
+                            <div class="depth-summary shallow">
+                                <strong>Shallow:</strong> ${t.shallow.cover}%<br>
+                                <small>${topShallowSpecies}</small>
+                            </div>
+                        </div>
+                        
+                        <div class="coverage-bar">
+                            <div class="coverage-fill" style="width: ${t.totalCover}%"></div>
+                        </div>
+                        <div style="font-size: 0.7rem; color: #64748b; text-align: right;">
+                            ${t.deep.species.length + t.shallow.species.length} species total
+                        </div>
+                    </div>
+                `;
+            });
+            
+            let speciesHtml = '';
+            assessment.species.forEach(s => {
+                speciesHtml += `
+                    <span class="species-badge-small" onclick="filterMapBySpecies('${s.code}')">
+                        ${s.code}
+                    </span>
+                `;
+            });
+            
+            let photosHtml = '';
+            assessment.photos.forEach(photo => {
+                photosHtml += `
+                    <div class="photo-item" onclick="viewPhoto('${photo}')">
+                        <i class="fas fa-camera"></i>
+                        <span>${photo}</span>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = `
+                <div class="assessment-detail">
+                    <div class="detail-label">Location</div>
+                    <div class="detail-value"><strong>${assessment.location}</strong></div>
+                    <div style="margin-top: 0.25rem;">${assessment.barangay}, ${assessment.municipality}</div>
+                </div>
+                <div class="assessment-detail">
+                    <div class="detail-label">Assessment Date</div>
+                    <div class="detail-value">${assessment.assessmentDate}</div>
+                </div>
+                <div class="assessment-detail">
+                    <div class="detail-label">Methodology</div>
+                    <div class="detail-value">${assessment.methodology}</div>
+                </div>
+                <div class="assessment-detail">
+                    <div class="detail-label">Coral Cover (Mean of ${assessment.transects.length} Transects)</div>
+                    <div class="detail-value">
+                        <span class="color-box ${healthClass}" style="display: inline-block; width: 15px; height: 15px; margin-right: 0.5rem;"></span>
+                        ${assessment.coralCover}% 
+                        <span class="health-badge ${badgeClass}" style="margin-left: 0.5rem;">${healthText}</span>
+                    </div>
+                </div>
+                <div class="assessment-detail">
+                    <div class="detail-label">Uploaded By</div>
+                    <div class="detail-value">
+                        <span class="uploader-badge">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            ${assessment.uploader.name} (${assessment.uploader.role})
+                        </span>
+                        <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem;">
+                            <i class="fas fa-envelope"></i> ${assessment.uploader.email}<br>
+                            <i class="fas fa-building"></i> ${assessment.uploader.institution}
+                        </div>
+                    </div>
+                </div>
+                <div class="assessment-detail">
+                    <div class="detail-label">Contributors (${assessment.contributors.length})</div>
+                    <div class="contributor-list">
+                        ${contributorsHtml}
+                    </div>
+                </div>
+                <div class="assessment-detail">
+                    <div class="detail-label">Species Found (${assessment.species.length})</div>
+                    <div style="margin-top: 0.5rem;">
+                        ${speciesHtml}
+                    </div>
+                </div>
+                <div class="assessment-detail">
+                    <div class="detail-label">Transects (Click to view details)</div>
+                    <div style="margin-top: 0.5rem; max-height: 300px; overflow-y: auto;">
+                        ${transectsHtml}
+                    </div>
+                </div>
+                <div class="assessment-detail">
+                    <div class="detail-label">Assessment Photos</div>
+                    <div class="photo-grid">
+                        ${photosHtml}
+                    </div>
+                </div>
+                <div class="assessment-detail">
+                    <div class="detail-label">Thesis File</div>
+                    <a href="#" class="file-link" onclick="downloadThesis('${assessment.thesisFile}')">
+                        <i class="fas fa-file-pdf"></i>
+                        ${assessment.thesisFile}
+                    </a>
+                </div>
+                <div class="assessment-detail">
+                    <button onclick="showTrendForAssessment(${assessment.id})" 
+                            style="width:100%; background:#0284c7; color:white; border:none; padding:0.6rem; border-radius:8px; cursor:pointer; margin-top:0.5rem;">
+                        <i class="fas fa-chart-line"></i> View Historical Trend for this Site
+                    </button>
+                </div>
+            `;
+        };
+
+        window.showTransectDetails = function(transect) {
+            const modal = document.getElementById('transectModal');
+            const details = document.getElementById('transectDetails');
+            
+            document.getElementById('transectModalTitle').textContent = `Transect ${transect.id} Details`;
+            
+            let deepSpeciesHtml = '';
+            transect.deep.species.forEach(s => {
+                const fullName = getFullSpeciesName(s.code);
+                deepSpeciesHtml += `
+                    <div class="species-row" onclick="filterMapBySpecies('${s.code}')">
+                        <div class="species-info">
+                            <span class="species-code-name">${s.code}</span>
+                            <span class="species-full-name">${fullName}</span>
+                        </div>
+                        <span class="species-cover">${s.cover}%</span>
+                    </div>
+                `;
+            });
+            
+            let shallowSpeciesHtml = '';
+            transect.shallow.species.forEach(s => {
+                const fullName = getFullSpeciesName(s.code);
+                shallowSpeciesHtml += `
+                    <div class="species-row" onclick="filterMapBySpecies('${s.code}')">
+                        <div class="species-info">
+                            <span class="species-code-name">${s.code}</span>
+                            <span class="species-full-name">${fullName}</span>
+                        </div>
+                        <span class="species-cover">${s.cover}%</span>
+                    </div>
+                `;
+            });
+            
+            details.innerHTML = `
+                <div style="background: #f8fafc; padding: 1rem; border-radius: 10px; margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <div>
+                            <span style="font-weight: 600;">Mean Transect Cover:</span> 
+                            <span style="font-size: 1.2rem; font-weight: 700; color: #0284c7;">${transect.totalCover}%</span>
+                            <span class="mean-badge">average of deep & shallow</span>
+                        </div>
+                    </div>
+                    <div style="background: white; padding: 0.75rem; border-radius: 8px;">
+                        <p style="margin-bottom: 0.2rem;"><strong>Start:</strong> ${transect.start[0].toFixed(6)}, ${transect.start[1].toFixed(6)}</p>
+                        <p><strong>End:</strong> ${transect.end[0].toFixed(6)}, ${transect.end[1].toFixed(6)}</p>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="depth-section depth-deep">
+                        <div class="depth-title">
+                            <span class="depth-badge depth-deep-badge">Deep</span>
+                            <span style="color: #0e7490; font-weight: 600;">${transect.deep.cover}%</span>
+                        </div>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            ${deepSpeciesHtml}
+                        </div>
+                    </div>
+                    
+                    <div class="depth-section depth-shallow">
+                        <div class="depth-title">
+                            <span class="depth-badge depth-shallow-badge">Shallow</span>
+                            <span style="color: #0891b2; font-weight: 600;">${transect.shallow.cover}%</span>
+                        </div>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            ${shallowSpeciesHtml}
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                    <button onclick="zoomToTransect(${transect.start[0]}, ${transect.start[1]})" 
+                            style="flex:1; background:#0284c7; color:white; border:none; padding:0.6rem; border-radius:6px; cursor:pointer;">
+                        <i class="fas fa-search-location"></i> Zoom to Start
+                    </button>
+                    <button onclick="zoomToTransect(${transect.end[0]}, ${transect.end[1]})" 
+                            style="flex:1; background:#0e7490; color:white; border:none; padding:0.6rem; border-radius:6px; cursor:pointer;">
+                        <i class="fas fa-search-location"></i> Zoom to End
+                    </button>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+        };
+
+        window.zoomToTransect = function(lat, lng) {
+            if (map) {
+                map.setView([lat, lng], 16);
+                closeModal();
+            }
+        };
+
+        window.closeModal = function() {
+            document.getElementById('transectModal').style.display = 'none';
+        };
+
+        window.closeSpeciesModal = function() {
+            document.getElementById('speciesDetailModal').style.display = 'none';
+        };
+
+        window.viewPhoto = function(photo) {
+            alert(`Opening photo: ${photo}\n(This would open the actual image in production)`);
+        };
+
+        window.downloadThesis = function(file) {
+            alert(`Downloading thesis: ${file}\n(This would download the actual PDF in production)`);
+        };
+
+        window.showSpeciesDetail = function(speciesCode) {
+            const modal = document.getElementById('speciesDetailModal');
+            
+            const species = speciesData.find(s => s.code === speciesCode);
+            if (!species) return;
+            
+            document.getElementById('selectedSpeciesName').textContent = species.fullName || species.subCategory;
+            
+            let totalCover = 0;
+            let transectCount = 0;
+            let deepCount = 0;
+            let shallowCount = 0;
+            const locations = new Set();
+            const assessments = new Set();
+            
+            allAssessments.forEach(a => {
+                a.transects.forEach(t => {
+                    const foundDeep = t.deep.species.find(s => s.code === speciesCode);
+                    if (foundDeep) {
+                        totalCover += foundDeep.cover;
+                        transectCount++;
+                        deepCount++;
+                        locations.add(`${a.barangay}, ${a.municipality} (Deep)`);
+                        assessments.add(a.id);
+                    }
+                    
+                    const foundShallow = t.shallow.species.find(s => s.code === speciesCode);
+                    if (foundShallow) {
+                        totalCover += foundShallow.cover;
+                        transectCount++;
+                        shallowCount++;
+                        locations.add(`${a.barangay}, ${a.municipality} (Shallow)`);
+                        assessments.add(a.id);
+                    }
+                });
+            });
+            
+            const avgCover = transectCount > 0 ? totalCover / transectCount : 0;
+            
+            document.getElementById('speciesTotalCount').textContent = avgCover.toFixed(1) + '%';
+            document.getElementById('speciesLocations').textContent = locations.size;
+            document.getElementById('speciesAssessments').textContent = transectCount;
+            
+            const locationList = document.getElementById('speciesLocationList');
+            let locationHtml = '';
+            Array.from(locations).slice(0, 10).forEach(loc => {
+                locationHtml += `<span class="species-badge-small">${loc}</span>`;
+            });
+            if (locations.size > 10) {
+                locationHtml += `<span class="species-badge-small">+${locations.size - 10} more</span>`;
+            }
+            locationList.innerHTML = locationHtml;
+            
+            const depthDist = document.getElementById('speciesDepthDistribution');
+            depthDist.innerHTML = `
+                <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px;">
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                        <div style="flex:1; text-align: center;">
+                            <span class="depth-badge depth-deep-badge">Deep</span>
+                            <div style="font-size: 1.2rem; font-weight: 700; color: #0e7490;">${deepCount}</div>
+                            <div style="font-size: 0.7rem;">occurrences</div>
+                        </div>
+                        <div style="flex:1; text-align: center;">
+                            <span class="depth-badge depth-shallow-badge">Shallow</span>
+                            <div style="font-size: 1.2rem; font-weight: 700; color: #0891b2;">${shallowCount}</div>
+                            <div style="font-size: 0.7rem;">occurrences</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 0.5rem; font-size: 0.8rem;">
+                        <strong>Expected coverage:</strong> Deep: ${species.deep}%, Shallow: ${species.shallow}%, Mean: ${species.mean}%
+                    </p>
+                    <div style="margin-top: 0.5rem;">
+                        <span class="species-badge-small">Major Category: ${species.majorCategory}</span>
+                    </div>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+        };
+
+        function updateSpeciesSummary() {
+            const area = document.getElementById('speciesArea').value;
+            const speciesList = document.getElementById('speciesList');
+            const avgSpecies = document.getElementById('avgSpecies');
+            
+            const filteredAssessments = getFilteredAssessments();
+            const areaFiltered = area === 'all' 
+                ? filteredAssessments 
+                : filteredAssessments.filter(a => a.municipality === area);
+            
+            const speciesTotals = {};
+            const speciesTransectCount = {};
+            const speciesLocations = {};
+            
+            areaFiltered.forEach(a => {
+                a.transects.forEach(t => {
+                    t.deep.species.forEach(s => {
+                        if (!speciesTotals[s.code]) {
+                            speciesTotals[s.code] = 0;
+                            speciesTransectCount[s.code] = 0;
+                            speciesLocations[s.code] = new Set();
+                        }
+                        speciesTotals[s.code] += s.cover;
+                        speciesTransectCount[s.code] += 1;
+                        speciesLocations[s.code].add(`${a.barangay}, ${a.municipality}`);
+                    });
+                    
+                    t.shallow.species.forEach(s => {
+                        if (!speciesTotals[s.code]) {
+                            speciesTotals[s.code] = 0;
+                            speciesTransectCount[s.code] = 0;
+                            speciesLocations[s.code] = new Set();
+                        }
+                        speciesTotals[s.code] += s.cover;
+                        speciesTransectCount[s.code] += 1;
+                        speciesLocations[s.code].add(`${a.barangay}, ${a.municipality}`);
+                    });
+                });
+            });
+            
+            const speciesMeans = Object.entries(speciesTotals)
+                .map(([code, total]) => ({ 
+                    code, 
+                    meanCover: total / speciesTransectCount[code],
+                    locations: Array.from(speciesLocations[code]).slice(0, 3)
+                }))
+                .sort((a, b) => b.meanCover - a.meanCover);
+            
+            let html = '';
+            speciesMeans.forEach(s => {
+                const species = speciesData.find(sp => sp.code === s.code);
+                const fullName = species ? species.subCategory : s.code;
+                const locationText = s.locations.join(', ');
+                
+                html += `
+                    <div class="species-item ${currentSpeciesFilter === s.code ? 'active' : ''}" 
+                         data-species="${s.code}"
+                         onclick="filterMapBySpecies('${s.code}')">
+                        <div>
+                            <span class="species-code">${s.code}</span>
+                            <span class="species-fullname">${fullName}</span>
+                            <div class="species-locations">
+                                <i class="fas fa-map-marker-alt" style="font-size: 0.55rem; margin-right: 0.2rem;"></i>
+                                ${locationText}${s.locations.length < speciesLocations[s.code].size ? '...' : ''}
+                            </div>
+                        </div>
+                        <span class="species-coverage">${s.meanCover.toFixed(1)}%</span>
+                    </div>
+                `;
+            });
+            
+            speciesList.innerHTML = html || '<div class="empty-state">No species data available</div>';
+            
+            const barangaySpeciesCount = {};
+            areaFiltered.forEach(a => {
+                const key = `${a.municipality}-${a.barangay}`;
+                if (!barangaySpeciesCount[key]) {
+                    barangaySpeciesCount[key] = new Set();
+                }
+                a.transects.forEach(t => {
+                    t.deep.species.forEach(s => barangaySpeciesCount[key].add(s.code));
+                    t.shallow.species.forEach(s => barangaySpeciesCount[key].add(s.code));
+                });
+            });
+            
+            const avgPerBarangay = Object.keys(barangaySpeciesCount).length > 0 
+                ? (Object.values(barangaySpeciesCount).reduce((sum, set) => sum + set.size, 0) / Object.keys(barangaySpeciesCount).length).toFixed(1)
+                : '0';
+            
+            avgSpecies.textContent = avgPerBarangay;
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('transectModal');
+            const speciesModal = document.getElementById('speciesDetailModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+            if (event.target === speciesModal) {
+                closeSpeciesModal();
+            }
+        };
+    </script>
+
+</body>
+</html>
