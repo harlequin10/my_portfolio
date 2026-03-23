@@ -331,7 +331,7 @@
         }
 
         #selectedAssessment {
-            max-height: 400px;
+            max-height: 500px;
             overflow-y: auto;
             padding-right: 0.25rem;
         }
@@ -365,6 +365,46 @@
         .detail-value {
             margin-top: 0.25rem;
             font-size: 0.9rem;
+        }
+
+        .abstract-box {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 0.5rem 0;
+            border-left: 4px solid #0284c7;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .abstract-title {
+            font-weight: 600;
+            color: #0284c7;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-button {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .back-button:hover {
+            background: #e2e8f0;
+            border-color: #0284c7;
         }
 
         .contributor-list {
@@ -461,56 +501,20 @@
         }
 
         .chart-container {
-            height: 200px;
+            height: 220px;
             margin: 0.75rem 0;
             position: relative;
         }
 
-        .time-controls {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 0.75rem;
-            flex-wrap: wrap;
-        }
-
         .trend-info {
-            font-size: 0.7rem;
-            color: #64748b;
+            font-size: 0.75rem;
+            color: #475569;
             text-align: center;
             margin-top: 0.5rem;
             padding: 0.5rem;
             background: #f8fafc;
             border-radius: 6px;
-        }
-
-        .year-stats {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-            justify-content: center;
-        }
-
-        .year-stat {
-            background: white;
-            padding: 0.3rem 0.6rem;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            border: 1px solid #e2e8f0;
-            cursor: help;
-        }
-
-        .year-stat strong {
-            color: #0284c7;
-        }
-
-        .assessment-badge {
-            background: #e2e8f0;
-            color: #475569;
-            padding: 0.1rem 0.3rem;
-            border-radius: 10px;
-            font-size: 0.6rem;
-            margin-left: 0.3rem;
+            font-weight: 500;
         }
 
         .clear-site-btn {
@@ -981,42 +985,24 @@
             border-color: #0284c7;
         }
 
+        .species-distribution-container {
+            overflow-x: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+            background: white;
+        }
+
         .species-distribution {
-            margin: 1rem 0;
-            height: 150px;
+            min-width: 600px;
+            height: 260px;
         }
 
-        .top-species-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.5rem;
-            margin: 1rem 0;
-        }
-
-        .top-species-card {
-            background: #f8fafc;
-            padding: 0.75rem;
-            border-radius: 10px;
+        .scroll-hint {
             text-align: center;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .top-species-card:hover {
-            transform: scale(1.02);
-            background: #e2e8f0;
-        }
-
-        .top-species-name {
-            font-weight: 600;
-            font-size: 0.8rem;
-            color: #0c4a6e;
-        }
-
-        .top-species-count {
-            font-size: 0.9rem;
-            color: #0284c7;
-            font-weight: 700;
+            font-size: 0.65rem;
+            color: #64748b;
+            margin-top: 0.25rem;
+            margin-bottom: 0.5rem;
         }
 
         @media (max-width: 1024px) {
@@ -1054,6 +1040,10 @@
                     <div class="label">Total Assessments</div>
                 </div>
                 <div class="stat-box">
+                    <div class="number" id="totalTransects">0</div>
+                    <div class="label">Total Transects</div>
+                </div>
+                <div class="stat-box">
                     <div class="number" id="avgCoverage">0%</div>
                     <div class="label">Avg. Coral Cover</div>
                 </div>
@@ -1084,9 +1074,9 @@
                 <div class="filter-group">
                     <label><i class="fas fa-calendar-alt"></i> Year Range:</label>
                     <div class="year-range">
-                        <input type="number" id="yearFrom" value="2020" min="2015" max="2024" step="1">
+                        <input type="number" id="yearFrom" value="2020" min="2015" max="2026" step="1">
                         <span>to</span>
-                        <input type="number" id="yearTo" value="2024" min="2015" max="2024" step="1">
+                        <input type="number" id="yearTo" value="2026" min="2015" max="2026" step="1">
                     </div>
                 </div>
                 <div class="filter-group">
@@ -1151,20 +1141,12 @@
                     <i class="fas fa-chart-line"></i>
                     <h3>Coral Cover Trends</h3>
                 </div>
-                <div class="time-controls">
-                    <select id="trendLevel">
-                        <option value="municipality">Municipality Level</option>
-                        <option value="barangay">Barangay Level</option>
-                        <option value="site">Specific Site</option>
-                    </select>
-                </div>
                 <div class="chart-container">
                     <canvas id="trendChart"></canvas>
                 </div>
                 <div class="trend-info" id="trendInfo">
                     <i class="fas fa-chart-line"></i> Loading trend data...
                 </div>
-                <div class="year-stats" id="yearStats"></div>
                 
                 <!-- Active Site Indicator and Clear Button -->
                 <div id="activeSiteIndicator" style="display: none;" class="active-site-indicator">
@@ -1220,10 +1202,14 @@
                 </div>
                 
                 <div id="speciesDistributionView" style="display: none;">
-                    <div class="species-distribution">
-                        <canvas id="speciesPieChart"></canvas>
+                    <div class="species-distribution-container">
+                        <div class="species-distribution">
+                            <canvas id="speciesBarChart"></canvas>
+                        </div>
                     </div>
-                    <div class="top-species-grid" id="topSpeciesGrid"></div>
+                    <div class="scroll-hint">
+                        <i class="fas fa-arrows-alt-h"></i> Scroll horizontally to see all species
+                    </div>
                     <div style="margin-top: 0.75rem; padding: 0.75rem; background: #f0f9ff; border-radius: 10px;">
                         <div class="detail-label">Total Species Found</div>
                         <div class="detail-value" style="font-size: 1.25rem; font-weight: 700;" id="totalSpeciesCount">0</div>
@@ -1255,18 +1241,12 @@
                     </div>
                 </div>
                 
-                <div class="sample-sites">
-                    <strong>Sample Excellent Sites:</strong><br>
-                    <span class="site-tag excellent" onclick="filterBySite('Gumasa')">Gumasa, Glan (82%)</span>
-                    <span class="site-tag excellent" onclick="filterBySite('Kamanga')">Kamanga, Maasim (76%)</span>
-                    <span class="site-tag excellent" onclick="filterBySite('Tambilil')">Tambilil, Kiamba (79%)</span>
+                <div class="sample-sites" id="sampleExcellentSites">
+                    <strong>🌟 Top Excellent Sites:</strong><br>
                 </div>
                 
-                <div class="sample-sites">
-                    <strong>Sample Poor Sites:</strong><br>
-                    <span class="site-tag poor" onclick="filterBySite('Poblacion')">Poblacion, Glan (18%)</span>
-                    <span class="site-tag poor" onclick="filterBySite('Lumasal')">Lumasal, Maasim (22%)</span>
-                    <span class="site-tag poor" onclick="filterBySite('Baluan')">Baluan, Gensan (15%)</span>
+                <div class="sample-sites" id="samplePoorSites">
+                    <strong>⚠️ Most Vulnerable Sites:</strong><br>
                 </div>
                 
                 <div style="margin-top: 0.75rem; padding: 0.5rem; background: #f8fafc; border-radius: 8px; font-size: 0.75rem;">
@@ -1336,7 +1316,7 @@
         // Global variables
         let map;
         let trendChart;
-        let speciesPieChart;
+        let speciesBarChart;
         let markerCluster;
         let allAssessments = [];
         let currentSpeciesFilter = null;
@@ -1483,7 +1463,65 @@
 
         const methodologies = ['Point Intercept Transect', 'Line Intercept Transect', 'Photo Quadrat', 'Video Transect'];
         
-        // Generate assessment data with multiple assessments per year for each site
+        // Function to generate assessment abstract
+        function generateAssessmentAbstract(assessment) {
+            const location = assessment.location;
+            const cover = assessment.coralCover;
+            const year = assessment.assessmentDate.split('-')[0];
+            const speciesCount = assessment.species.length;
+            const transectCount = assessment.transects.length;
+            
+            // Get dominant species (top 3 by coverage)
+            const allSpecies = [];
+            assessment.transects.forEach(t => {
+                t.deep.species.forEach(s => allSpecies.push(s));
+                t.shallow.species.forEach(s => allSpecies.push(s));
+            });
+            
+            const speciesCoverage = {};
+            allSpecies.forEach(s => {
+                if (!speciesCoverage[s.code]) speciesCoverage[s.code] = 0;
+                speciesCoverage[s.code] += s.cover;
+            });
+            
+            const dominantSpecies = Object.entries(speciesCoverage)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 3)
+                .map(s => s[0])
+                .join(', ');
+            
+            let healthStatus = '';
+            let recommendation = '';
+            
+            if (cover >= 65) {
+                healthStatus = 'excellent condition';
+                recommendation = 'Serves as a potential reference site for coral reef conservation.';
+            } else if (cover >= 45) {
+                healthStatus = 'good condition';
+                recommendation = 'Continued monitoring and protection recommended.';
+            } else if (cover >= 25) {
+                healthStatus = 'fair condition';
+                recommendation = 'Restoration interventions may be beneficial.';
+            } else {
+                healthStatus = 'poor condition';
+                recommendation = 'Urgent conservation action required.';
+            }
+            
+            return `This assessment conducted at ${location} in ${year} recorded ${cover}% live coral cover, indicating ${healthStatus}. A total of ${speciesCount} coral species were identified, with ${dominantSpecies} being the dominant taxa. Data were collected from ${transectCount} transects. ${recommendation}`;
+        }
+        
+        // Function to close assessment details (show empty state)
+        function closeAssessmentDetails() {
+            const container = document.getElementById('selectedAssessment');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-map-marker-alt" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                    <p>Click a marker on the map to view assessment details</p>
+                </div>
+            `;
+        }
+        
+        // Generate assessment data with multiple assessments per year for each site (2020-2026)
         function generateAssessmentsFromCoordinates() {
             let assessments = [];
             let id = 1;
@@ -1498,8 +1536,8 @@
 
             function createAssessmentsForMunicipality(municipality, barangays, numAssessmentsPerBarangay = 4) {
                 barangays.forEach(barangay => {
-                    // Create multiple assessments per year for each site for ALL years 2020-2024
-                    const years = [2020, 2021, 2022, 2023, 2024];
+                    // Create multiple assessments per year for each site for ALL years 2020-2026
+                    const years = [2020, 2021, 2022, 2023, 2024, 2025, 2026];
                     
                     years.forEach(year => {
                         // Create 2-3 assessments per year for each site
@@ -1509,14 +1547,30 @@
                             const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
                             const day = String(Math.floor(Math.random() * 28) + 1).padStart(2, '0');
                             
-                            // Assign health category based on barangay name
+                            // Assign health category based on barangay name with trend (improving over time for excellent sites)
                             let healthCategory;
+                            let adjustedRange;
+                            
                             if (barangay.name === 'Gumasa' || barangay.name === 'Kamanga' || barangay.name === 'Tambilil') {
-                                healthCategory = healthCategories[0];
+                                // Excellent sites - improving over time
+                                let improvement = (year - 2020) * 1.5;
+                                let baseRange = [65, 85];
+                                adjustedRange = [
+                                    Math.min(baseRange[0] + improvement, 92),
+                                    Math.min(baseRange[1] + improvement, 95)
+                                ];
+                                healthCategory = { name: 'excellent', range: adjustedRange, color: '#2e7d32' };
                             } else if (barangay.name === 'Katubao' || barangay.name === 'Kling' || barangay.name === 'Lumasal') {
                                 healthCategory = healthCategories[1];
                             } else if (barangay.name === 'Poblacion' || barangay.name === 'Baluan' || barangay.name === 'Lun Padidu') {
-                                healthCategory = healthCategories[3];
+                                // Poor sites - slight recovery
+                                let recovery = (year - 2020) * 0.8;
+                                let baseRange = [10, 24];
+                                adjustedRange = [
+                                    Math.min(baseRange[0] + recovery, 28),
+                                    Math.min(baseRange[1] + recovery, 32)
+                                ];
+                                healthCategory = { name: 'poor', range: adjustedRange, color: '#f44336' };
                             } else {
                                 healthCategory = healthCategories[Math.floor(Math.random() * healthCategories.length)];
                             }
@@ -1668,6 +1722,75 @@
             return assessments;
         }
 
+        // Function to update sample sites based on actual data
+        function updateSampleSites() {
+            // Get all unique locations with their latest coral cover
+            const siteCoverage = {};
+            
+            allAssessments.forEach(assessment => {
+                const siteName = `${assessment.barangay}, ${assessment.municipality}`;
+                // Use the most recent assessment for each site
+                if (!siteCoverage[siteName] || new Date(assessment.assessmentDate) > new Date(siteCoverage[siteName].date)) {
+                    siteCoverage[siteName] = {
+                        cover: assessment.coralCover,
+                        date: assessment.assessmentDate,
+                        location: assessment.location,
+                        barangay: assessment.barangay,
+                        municipality: assessment.municipality
+                    };
+                }
+            });
+            
+            // Convert to array and sort by coverage
+            const sites = Object.entries(siteCoverage).map(([name, data]) => ({
+                name: name,
+                cover: data.cover,
+                location: data.location,
+                barangay: data.barangay,
+                municipality: data.municipality
+            }));
+            
+            // Get top 3 excellent sites (highest coverage)
+            const excellentSites = [...sites].sort((a, b) => b.cover - a.cover).slice(0, 3);
+            
+            // Get top 3 poor sites (lowest coverage)
+            const poorSites = [...sites].sort((a, b) => a.cover - b.cover).slice(0, 3);
+            
+            // Update Excellent Sites section
+            const excellentContainer = document.getElementById('sampleExcellentSites');
+            let excellentHtml = '<strong>🌟 Top Excellent Sites:</strong><br>';
+            excellentSites.forEach(site => {
+                let healthClass = '';
+                if (site.cover >= 65) healthClass = 'excellent';
+                else if (site.cover >= 45) healthClass = 'good';
+                else if (site.cover >= 25) healthClass = 'fair';
+                else healthClass = 'poor';
+                excellentHtml += `
+                    <span class="site-tag ${healthClass}" onclick="filterBySite('${site.barangay}')">
+                        ${site.name} (${site.cover}%)
+                    </span>
+                `;
+            });
+            excellentContainer.innerHTML = excellentHtml;
+            
+            // Update Poor Sites section
+            const poorContainer = document.getElementById('samplePoorSites');
+            let poorHtml = '<strong>⚠️ Most Vulnerable Sites:</strong><br>';
+            poorSites.forEach(site => {
+                let healthClass = '';
+                if (site.cover >= 65) healthClass = 'excellent';
+                else if (site.cover >= 45) healthClass = 'good';
+                else if (site.cover >= 25) healthClass = 'fair';
+                else healthClass = 'poor';
+                poorHtml += `
+                    <span class="site-tag ${healthClass}" onclick="filterBySite('${site.barangay}')">
+                        ${site.name} (${site.cover}%)
+                    </span>
+                `;
+            });
+            poorContainer.innerHTML = poorHtml;
+        }
+
         // Helper function to get filtered assessments based on current filters
         function getFilteredAssessments() {
             const municipality = document.getElementById('municipalityFilter').value;
@@ -1697,7 +1820,6 @@
                     return false;
                 });
             }
-            // If health === 'all', no filtering needed - all assessments pass
 
             if (currentSpeciesFilter) {
                 filtered = filtered.filter(assessment => {
@@ -1716,7 +1838,6 @@
 
         // Update trend chart based on filters
         function updateTrendChart() {
-            const level = document.getElementById('trendLevel').value;
             const filtered = getFilteredAssessments();
             
             // Get year range from filters
@@ -1751,30 +1872,7 @@
                 return null;
             });
             
-            // Create year stats HTML showing number of assessments per year
-            let yearStatsHtml = '';
-            years.forEach(y => {
-                if (yearlyData[y].count > 0) {
-                    const avg = (yearlyData[y].sum / yearlyData[y].count).toFixed(1);
-                    const assessmentCount = yearlyData[y].count;
-                    const valuesList = yearlyData[y].values.join(', ');
-                    yearStatsHtml += `
-                        <div class="year-stat" title="Individual assessment values: ${valuesList}">
-                            <strong>${y}</strong>: ${avg}% 
-                            <span class="assessment-badge">${assessmentCount} assessment${assessmentCount > 1 ? 's' : ''}</span>
-                        </div>
-                    `;
-                } else {
-                    yearStatsHtml += `
-                        <div class="year-stat" style="opacity:0.5;">
-                            <strong>${y}</strong>: No data
-                        </div>
-                    `;
-                }
-            });
-            document.getElementById('yearStats').innerHTML = yearStatsHtml;
-            
-            // Determine trend info text with assessment count
+            // Determine trend info text
             let trendInfoText = '';
             if (currentSiteFilter) {
                 const siteAssessments = filtered.filter(a => a.location === currentSiteFilter || a.barangay === currentSiteFilter);
@@ -1790,18 +1888,12 @@
                 document.getElementById('activeSiteIndicator').style.display = 'none';
                 document.getElementById('clearSiteBtn').style.display = 'none';
                 
-                if (level === 'municipality') {
-                    const municipality = document.getElementById('municipalityFilter').value;
-                    const totalAssessments = filtered.length;
-                    if (municipality !== 'all') {
-                        trendInfoText = `📊 ${municipality} Municipality | ${totalAssessments} total assessments (${yearFrom}-${yearTo})`;
-                    } else {
-                        trendInfoText = `📊 All Municipalities | ${totalAssessments} total assessments (${yearFrom}-${yearTo})`;
-                    }
-                } else if (level === 'barangay') {
-                    trendInfoText = `📊 Barangay Level Trend (${yearFrom}-${yearTo})`;
+                const municipality = document.getElementById('municipalityFilter').value;
+                const totalAssessments = filtered.length;
+                if (municipality !== 'all') {
+                    trendInfoText = `📊 ${municipality} Municipality | ${totalAssessments} total assessments (${yearFrom}-${yearTo})`;
                 } else {
-                    trendInfoText = `📊 Selected Area Trend (${yearFrom}-${yearTo})`;
+                    trendInfoText = `📊 All Municipalities | ${totalAssessments} total assessments (${yearFrom}-${yearTo})`;
                 }
             }
             
@@ -1810,6 +1902,18 @@
             if (trendChart) {
                 trendChart.data.labels = years.map(y => y.toString());
                 trendChart.data.datasets[0].data = averages;
+                
+                // Add custom tooltip to show assessment count on hover
+                trendChart.options.plugins.tooltip.callbacks.label = function(context) {
+                    const year = context.label;
+                    const yearIndex = years.indexOf(parseInt(year));
+                    const yearData = yearlyData[years[yearIndex]];
+                    if (yearData && yearData.count > 0) {
+                        return `Average Coral Cover: ${context.raw}%\n📊 Assessments: ${yearData.count}`;
+                    }
+                    return `Average Coral Cover: ${context.raw}%`;
+                };
+                
                 trendChart.update();
             }
         }
@@ -1853,9 +1957,6 @@
                 updateStatistics();
                 updateSpeciesSummary();
                 
-                // Update the trend level dropdown to show "Specific Site"
-                document.getElementById('trendLevel').value = 'site';
-                
                 // Show toast notification
                 const toast = document.createElement('div');
                 toast.style.position = 'fixed';
@@ -1876,7 +1977,7 @@
         // Clear site filter - GO BACK TO ALL LOCATIONS
         function clearSiteFilter() {
             currentSiteFilter = null;
-            document.getElementById('trendLevel').value = 'municipality';
+            closeAssessmentDetails(); // Close the assessment details
             updateTrendChart();
             updateStatistics();
             updateSpeciesSummary();
@@ -1897,12 +1998,21 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        // Update statistics based on filters
+        // Update statistics based on filters - INCLUDING TOTAL TRANSECTS
         function updateStatistics() {
             const filtered = getFilteredAssessments();
             
+            // Update total assessments
             document.getElementById('totalAssessments').textContent = filtered.length;
             
+            // Calculate total transects
+            let totalTransects = 0;
+            filtered.forEach(assessment => {
+                totalTransects += assessment.transects.length;
+            });
+            document.getElementById('totalTransects').textContent = totalTransects;
+            
+            // Update average coral cover
             if (filtered.length > 0) {
                 const avgCover = (filtered.reduce((sum, a) => sum + a.coralCover, 0) / filtered.length).toFixed(1);
                 document.getElementById('avgCoverage').textContent = avgCover + '%';
@@ -1910,12 +2020,14 @@
                 document.getElementById('avgCoverage').textContent = '0%';
             }
             
+            // Update total unique species
             const uniqueSpecies = new Set();
             filtered.forEach(a => {
                 a.species.forEach(s => uniqueSpecies.add(s.code));
             });
             document.getElementById('totalSpecies').textContent = uniqueSpecies.size;
             
+            // Update health summary counts
             const excellent = filtered.filter(a => a.coralCover >= 65).length;
             const good = filtered.filter(a => a.coralCover >= 45 && a.coralCover < 65).length;
             const fair = filtered.filter(a => a.coralCover >= 25 && a.coralCover < 45).length;
@@ -1925,12 +2037,154 @@
             document.getElementById('goodCount').textContent = good;
             document.getElementById('fairCount').textContent = fair;
             document.getElementById('poorCount').textContent = poor;
+            
+            // Update sample sites based on actual data
+            updateSampleSites();
         }
 
         // Helper function to get full species name from code
         function getFullSpeciesName(code) {
             const species = speciesData.find(s => s.code === code);
             return species ? species.subCategory : code;
+        }
+
+        // Initialize bar chart for species distribution with horizontal scrolling
+        function initializeSpeciesBarChart() {
+            const ctx = document.getElementById('speciesBarChart').getContext('2d');
+            
+            speciesBarChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Average Coverage (%)',
+                        data: [],
+                        backgroundColor: 'rgba(2, 132, 199, 0.7)',
+                        borderColor: '#0284c7',
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        barPercentage: 0.7,
+                        categoryPercentage: 0.8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) {
+                                    const speciesCode = context[0].label;
+                                    const species = speciesData.find(s => s.code === speciesCode);
+                                    if (species) {
+                                        return species.subCategory;
+                                    }
+                                    return speciesCode;
+                                },
+                                label: function(context) {
+                                    return `Coverage: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Average Coverage (%)',
+                                font: {
+                                    size: 10
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Species Code',
+                                font: {
+                                    size: 10
+                                }
+                            },
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45,
+                                font: {
+                                    size: 9
+                                },
+                                autoSkip: false
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update species distribution bar chart
+        function updateSpeciesDistribution() {
+            const area = document.getElementById('speciesArea').value;
+            const filteredAssessments = getFilteredAssessments();
+            const areaFiltered = area === 'all' 
+                ? filteredAssessments 
+                : filteredAssessments.filter(a => a.municipality === area);
+            
+            const speciesTotals = {};
+            const speciesCounts = {};
+            
+            areaFiltered.forEach(a => {
+                a.transects.forEach(t => {
+                    t.deep.species.forEach(s => {
+                        if (!speciesTotals[s.code]) {
+                            speciesTotals[s.code] = 0;
+                            speciesCounts[s.code] = 0;
+                        }
+                        speciesTotals[s.code] += s.cover;
+                        speciesCounts[s.code] += 1;
+                    });
+                    t.shallow.species.forEach(s => {
+                        if (!speciesTotals[s.code]) {
+                            speciesTotals[s.code] = 0;
+                            speciesCounts[s.code] = 0;
+                        }
+                        speciesTotals[s.code] += s.cover;
+                        speciesCounts[s.code] += 1;
+                    });
+                });
+            });
+            
+            const speciesMeans = {};
+            Object.keys(speciesTotals).forEach(code => {
+                speciesMeans[code] = speciesTotals[code] / speciesCounts[code];
+            });
+            
+            // Get all species sorted by coverage (show all, not just top 8)
+            const sortedSpecies = Object.entries(speciesMeans)
+                .sort((a, b) => b[1] - a[1]);
+            
+            const labels = sortedSpecies.map(s => s[0]);
+            const data = sortedSpecies.map(s => Math.round(s[1] * 10) / 10);
+            
+            // Calculate required width based on number of species (100px per species minimum)
+            const chartContainer = document.querySelector('.species-distribution');
+            if (chartContainer && speciesBarChart) {
+                const minWidth = Math.max(600, labels.length * 55);
+                chartContainer.style.minWidth = minWidth + 'px';
+                
+                speciesBarChart.data.labels = labels;
+                speciesBarChart.data.datasets[0].data = data;
+                speciesBarChart.update();
+            }
+            
+            document.getElementById('totalSpeciesCount').textContent = Object.keys(speciesMeans).length;
         }
 
         // Initialize everything
@@ -1944,7 +2198,7 @@
 
             initializeMap();
             initializeCharts();
-            initializeSpeciesPieChart();
+            initializeSpeciesBarChart();
 
             updateSpeciesSummary();
 
@@ -1954,34 +2208,32 @@
                 updateStatistics();
                 updateSpeciesSummary();
                 updateTrendChart();
+                updateSpeciesDistribution();
             });
             document.getElementById('yearTo').addEventListener('change', function() {
                 filterMarkers();
                 updateStatistics();
                 updateSpeciesSummary();
                 updateTrendChart();
+                updateSpeciesDistribution();
             });
             document.getElementById('municipalityFilter').addEventListener('change', function() {
                 filterMarkers();
                 updateStatistics();
                 updateSpeciesSummary();
                 updateTrendChart();
+                updateSpeciesDistribution();
             });
             document.getElementById('healthFilter').addEventListener('change', function() {
                 filterMarkers();
                 updateStatistics();
                 updateSpeciesSummary();
                 updateTrendChart();
+                updateSpeciesDistribution();
             });
             document.getElementById('speciesArea').addEventListener('change', function() {
                 updateSpeciesSummary();
                 updateSpeciesDistribution();
-            });
-            document.getElementById('trendLevel').addEventListener('change', function() {
-                if (this.value !== 'site') {
-                    currentSiteFilter = null;
-                }
-                updateTrendChart();
             });
         });
 
@@ -2015,6 +2267,7 @@
             updateStatistics();
             updateSpeciesSummary();
             updateTrendChart();
+            updateSpeciesDistribution();
         }
 
         function clearSpeciesFilter() {
@@ -2030,6 +2283,7 @@
             updateStatistics();
             updateSpeciesSummary();
             updateTrendChart();
+            updateSpeciesDistribution();
         }
 
         function updateFilterIndicator() {
@@ -2144,8 +2398,8 @@
         function initializeCharts() {
             const ctx = document.getElementById('trendChart').getContext('2d');
             
-            const years = [2020, 2021, 2022, 2023, 2024];
-            const initialData = [null, null, null, null, null];
+            const years = [2020, 2021, 2022, 2023, 2024, 2025, 2026];
+            const initialData = [null, null, null, null, null, null, null];
             
             trendChart = new Chart(ctx, {
                 type: 'line',
@@ -2207,43 +2461,6 @@
             updateTrendChart();
         }
 
-        function initializeSpeciesPieChart() {
-            const ctx = document.getElementById('speciesPieChart').getContext('2d');
-            
-            speciesPieChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        data: [],
-                        backgroundColor: [
-                            '#0284c7',
-                            '#0e7490',
-                            '#0891b2',
-                            '#06b6d4',
-                            '#22d3ee'
-                        ],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { 
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.label}: ${context.raw}% avg cover`;
-                                }
-                            }
-                        }
-                    },
-                    cutout: '60%'
-                }
-            });
-        }
-
         function showSpeciesListView() {
             document.getElementById('listViewBtn').classList.add('active');
             document.getElementById('distViewBtn').classList.remove('active');
@@ -2257,69 +2474,6 @@
             document.getElementById('speciesListView').style.display = 'none';
             document.getElementById('speciesDistributionView').style.display = 'block';
             updateSpeciesDistribution();
-        }
-
-        function updateSpeciesDistribution() {
-            const area = document.getElementById('speciesArea').value;
-            const filteredAssessments = getFilteredAssessments();
-            const areaFiltered = area === 'all' 
-                ? filteredAssessments 
-                : filteredAssessments.filter(a => a.municipality === area);
-            
-            const speciesTotals = {};
-            const speciesCounts = {};
-            
-            areaFiltered.forEach(a => {
-                a.transects.forEach(t => {
-                    t.deep.species.forEach(s => {
-                        if (!speciesTotals[s.code]) {
-                            speciesTotals[s.code] = 0;
-                            speciesCounts[s.code] = 0;
-                        }
-                        speciesTotals[s.code] += s.cover;
-                        speciesCounts[s.code] += 1;
-                    });
-                    t.shallow.species.forEach(s => {
-                        if (!speciesTotals[s.code]) {
-                            speciesTotals[s.code] = 0;
-                            speciesCounts[s.code] = 0;
-                        }
-                        speciesTotals[s.code] += s.cover;
-                        speciesCounts[s.code] += 1;
-                    });
-                });
-            });
-            
-            const speciesMeans = {};
-            Object.keys(speciesTotals).forEach(code => {
-                speciesMeans[code] = speciesTotals[code] / speciesCounts[code];
-            });
-            
-            const sortedSpecies = Object.entries(speciesMeans)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 5);
-            
-            if (speciesPieChart) {
-                speciesPieChart.data.labels = sortedSpecies.map(s => s[0]);
-                speciesPieChart.data.datasets[0].data = sortedSpecies.map(s => Math.round(s[1]));
-                speciesPieChart.update();
-            }
-            
-            const topSpeciesGrid = document.getElementById('topSpeciesGrid');
-            let gridHtml = '';
-            sortedSpecies.slice(0, 4).forEach(s => {
-                const fullSpecies = speciesData.find(sp => sp.code === s[0]) || { code: s[0] };
-                gridHtml += `
-                    <div class="top-species-card" onclick="filterMapBySpecies('${fullSpecies.code}')">
-                        <div class="top-species-name">${s[0]}</div>
-                        <div class="top-species-count">${Math.round(s[1])}%</div>
-                        <div style="font-size: 0.65rem; color: #64748b;">avg cover</div>
-                    </div>
-                `;
-            });
-            topSpeciesGrid.innerHTML = gridHtml;
-            
-            document.getElementById('totalSpeciesCount').textContent = Object.keys(speciesMeans).length;
         }
 
         window.showAssessmentDetails = function(assessmentId) {
@@ -2418,7 +2572,17 @@
                 `;
             });
             
-            container.innerHTML = `
+            // Generate abstract
+            const abstract = generateAssessmentAbstract(assessment);
+            
+            // Add back button at the top
+            const backButton = `
+                <button onclick="clearSiteFilter()" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Back to All Locations
+                </button>
+            `;
+            
+            container.innerHTML = backButton + `
                 <div class="assessment-detail">
                     <div class="detail-label">Location</div>
                     <div class="detail-value"><strong>${assessment.location}</strong></div>
@@ -2439,6 +2603,12 @@
                         ${assessment.coralCover}% 
                         <span class="health-badge ${badgeClass}" style="margin-left: 0.5rem;">${healthText}</span>
                     </div>
+                </div>
+                <div class="abstract-box">
+                    <div class="abstract-title">
+                        <i class="fas fa-file-alt"></i> Assessment Abstract
+                    </div>
+                    <p>${abstract}</p>
                 </div>
                 <div class="assessment-detail">
                     <div class="detail-label">Uploaded By</div>
