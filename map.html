@@ -852,7 +852,7 @@
             right: 0;
             bottom: 0;
             background: rgba(0,0,0,0.5);
-            z-index: 9999;
+            z-index: 10001;
             align-items: center;
             justify-content: center;
         }
@@ -866,6 +866,7 @@
             overflow-y: auto;
             padding: 1.5rem;
             position: relative;
+            z-index: 10002;
         }
 
         .modal-close {
@@ -962,47 +963,110 @@
             margin-left: 0.5rem;
         }
 
-        .location-species-toggle {
-            display: flex;
-            gap: 0.5rem;
+        /* Barangay Details Styles */
+        .barangay-header {
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+            border-radius: 12px;
+            padding: 0.8rem;
             margin-bottom: 1rem;
-        }
-
-        .toggle-btn {
-            flex: 1;
-            padding: 0.5rem;
-            border: 1px solid #cbd5e1;
-            background: white;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: all 0.2s;
-        }
-
-        .toggle-btn.active {
-            background: #0284c7;
-            color: white;
-            border-color: #0284c7;
-        }
-
-        .species-distribution-container {
-            overflow-x: auto;
-            margin: 1rem 0;
-            border-radius: 8px;
-            background: white;
-        }
-
-        .species-distribution {
-            min-width: 600px;
-            height: 260px;
-        }
-
-        .scroll-hint {
             text-align: center;
-            font-size: 0.65rem;
-            color: #64748b;
-            margin-top: 0.25rem;
-            margin-bottom: 0.5rem;
+        }
+        .barangay-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0284c7;
+        }
+        .municipality-tag {
+            background: #0284c7;
+            display: inline-block;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.7rem;
+            margin-top: 0.3rem;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.4rem 0;
+            border-bottom: 1px dashed #cbd5e1;
+            font-size: 0.75rem;
+        }
+        
+        /* Dropdown/Collapsible Styles */
+        .dropdown-header {
+            background: #f1f5f9;
+            padding: 0.6rem 0.8rem;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0.5rem 0;
+            transition: all 0.2s;
+            border: 1px solid #e2e8f0;
+        }
+        .dropdown-header:hover {
+            background: #e2e8f0;
+        }
+        .dropdown-header .detail-label {
+            margin-bottom: 0;
+        }
+        .dropdown-icon {
+            transition: transform 0.2s;
+        }
+        .dropdown-icon.rotated {
+            transform: rotate(180deg);
+        }
+        .dropdown-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .dropdown-content.open {
+            max-height: 400px;
+            overflow-y: auto;
+            transition: max-height 0.3s ease-in;
+        }
+        .assessment-badge {
+            background: #f1f5f9;
+            padding: 0.3rem 0.6rem;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.3rem;
+        }
+        .assessment-badge:hover {
+            background: #e2e8f0;
+            transform: translateX(4px);
+        }
+
+        /* Transect Modal Species List */
+        .transect-species-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 0.5rem;
+        }
+        .transect-species-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.8rem;
+        }
+        .transect-species-item:last-child {
+            border-bottom: none;
+        }
+        .species-name-code {
+            font-weight: 500;
+        }
+        .species-percent {
+            font-weight: 600;
+            color: #0284c7;
         }
 
         @media (max-width: 1024px) {
@@ -1102,22 +1166,10 @@
                     <i class="fas fa-palette"></i> Legend
                 </div>
                 <div class="legend-grid">
-                    <div class="legend-item">
-                        <div class="color-box color-excellent"></div>
-                        <span>Excellent (>65% cover)</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="color-box color-good"></div>
-                        <span>Good (45-65% cover)</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="color-box color-fair"></div>
-                        <span>Fair (25-45% cover)</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="color-box color-poor"></div>
-                        <span>Poor (<25% cover)</span>
-                    </div>
+                    <div class="legend-item"><div class="color-box color-excellent"></div><span>Excellent (>65% cover)</span></div>
+                    <div class="legend-item"><div class="color-box color-good"></div><span>Good (45-65% cover)</span></div>
+                    <div class="legend-item"><div class="color-box color-fair"></div><span>Fair (25-45% cover)</span></div>
+                    <div class="legend-item"><div class="color-box color-poor"></div><span>Poor (<25% cover)</span></div>
                 </div>
             </div>
         </div>
@@ -1125,13 +1177,13 @@
         <div class="sidebar">
             <div class="info-card">
                 <div class="card-header">
-                    <i class="fas fa-clipboard-list"></i>
-                    <h3>Assessment Details</h3>
+                    <i class="fas fa-map-marked-alt"></i>
+                    <h3>Barangay Details</h3>
                 </div>
                 <div id="selectedAssessment">
                     <div class="empty-state">
                         <i class="fas fa-map-marker-alt" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
-                        <p>Click a marker on the map to view assessment details</p>
+                        <p>Click a marker on the map to view barangay details</p>
                     </div>
                 </div>
             </div>
@@ -1147,74 +1199,15 @@
                 <div class="trend-info" id="trendInfo">
                     <i class="fas fa-chart-line"></i> Loading trend data...
                 </div>
-                
-                <!-- Active Site Indicator and Clear Button -->
                 <div id="activeSiteIndicator" style="display: none;" class="active-site-indicator">
                     <span><i class="fas fa-map-marker-alt"></i> <strong id="activeSiteName"></strong></span>
                     <button onclick="clearSiteFilter()" style="background: none; border: none; color: #0284c7; cursor: pointer;">
                         <i class="fas fa-times-circle"></i> Change
                     </button>
                 </div>
-                
                 <button onclick="clearSiteFilter()" id="clearSiteBtn" style="display: none;" class="clear-site-btn">
                     <i class="fas fa-arrow-left"></i> Back to All Locations
                 </button>
-            </div>
-
-            <div class="info-card">
-                <div class="card-header">
-                    <i class="fas fa-fish"></i>
-                    <h3>Coral Species Summary</h3>
-                </div>
-                <div class="filter-group" style="margin-bottom: 0.75rem;">
-                    <select id="speciesArea" style="width: 100%;">
-                        <option value="all">All Areas</option>
-                        <option value="Maasim">Maasim</option>
-                        <option value="Kiamba">Kiamba</option>
-                        <option value="Maitum">Maitum</option>
-                        <option value="Glan">Glan</option>
-                        <option value="Alabel">Alabel</option>
-                        <option value="Malapatan">Malapatan</option>
-                        <option value="General Santos">General Santos</option>
-                    </select>
-                </div>
-                
-                <div class="location-species-toggle">
-                    <button class="toggle-btn active" id="listViewBtn" onclick="showSpeciesListView()">Species List</button>
-                    <button class="toggle-btn" id="distViewBtn" onclick="showSpeciesDistribution()">Distribution</button>
-                </div>
-                
-                <div id="speciesFilterIndicator" class="filter-indicator" style="display: none;">
-                    <span>Showing sites with: <strong id="activeFilterSpecies"></strong></span>
-                    <button class="clear-filter-btn" onclick="clearSpeciesFilter()">Clear</button>
-                </div>
-                
-                <div id="speciesListView">
-                    <div class="species-header">
-                        <span>Species Code</span>
-                        <span>Mean Coverage</span>
-                    </div>
-                    <div class="species-list-container" id="speciesList"></div>
-                    <div style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #e2e8f0;">
-                        <div class="detail-label">Average Species per Barangay</div>
-                        <div class="detail-value" style="font-size: 1.25rem; font-weight: 700;" id="avgSpecies">0</div>
-                    </div>
-                </div>
-                
-                <div id="speciesDistributionView" style="display: none;">
-                    <div class="species-distribution-container">
-                        <div class="species-distribution">
-                            <canvas id="speciesBarChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="scroll-hint">
-                        <i class="fas fa-arrows-alt-h"></i> Scroll horizontally to see all species
-                    </div>
-                    <div style="margin-top: 0.75rem; padding: 0.75rem; background: #f0f9ff; border-radius: 10px;">
-                        <div class="detail-label">Total Species Found</div>
-                        <div class="detail-value" style="font-size: 1.25rem; font-weight: 700;" id="totalSpeciesCount">0</div>
-                    </div>
-                </div>
             </div>
             
             <div class="info-card">
@@ -1223,87 +1216,48 @@
                     <h3>Reef Health Summary</h3>
                 </div>
                 <div class="health-summary">
-                    <div class="health-stat">
-                        <div class="count" style="color: #2e7d32;" id="excellentCount">0</div>
-                        <div class="label">Excellent</div>
-                    </div>
-                    <div class="health-stat">
-                        <div class="count" style="color: #4caf50;" id="goodCount">0</div>
-                        <div class="label">Good</div>
-                    </div>
-                    <div class="health-stat">
-                        <div class="count" style="color: #ffb74d;" id="fairCount">0</div>
-                        <div class="label">Fair</div>
-                    </div>
-                    <div class="health-stat">
-                        <div class="count" style="color: #f44336;" id="poorCount">0</div>
-                        <div class="label">Poor</div>
-                    </div>
+                    <div class="health-stat"><div class="count" style="color:#2e7d32;" id="excellentCount">0</div><div class="label">Excellent</div></div>
+                    <div class="health-stat"><div class="count" style="color:#4caf50;" id="goodCount">0</div><div class="label">Good</div></div>
+                    <div class="health-stat"><div class="count" style="color:#ffb74d;" id="fairCount">0</div><div class="label">Fair</div></div>
+                    <div class="health-stat"><div class="count" style="color:#f44336;" id="poorCount">0</div><div class="label">Poor</div></div>
                 </div>
-                
-                <div class="sample-sites" id="sampleExcellentSites">
-                    <strong>🌟 Top Excellent Sites:</strong><br>
-                </div>
-                
-                <div class="sample-sites" id="samplePoorSites">
-                    <strong>⚠️ Most Vulnerable Sites:</strong><br>
-                </div>
-                
+                <div class="sample-sites" id="sampleExcellentSites"><strong>🌟 Top Excellent Sites:</strong><br></div>
+                <div class="sample-sites" id="samplePoorSites"><strong>⚠️ Most Vulnerable Sites:</strong><br></div>
                 <div style="margin-top: 0.75rem; padding: 0.5rem; background: #f8fafc; border-radius: 8px; font-size: 0.75rem;">
-                    <i class="fas fa-info-circle" style="color: #0284c7;"></i>
-                    Click on any species to see where it's found
+                    <i class="fas fa-info-circle" style="color: #0284c7;"></i> Click on any barangay marker to view details
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal" id="transectModal">
+    <!-- Transect Details Modal (for showing all species) - HIGHER Z-INDEX -->
+    <div class="modal" id="transectDetailsModal" style="z-index: 20000;">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()">&times;</button>
-            <h2 style="color: #0c4a6e; margin-bottom: 1rem;" id="transectModalTitle">Transect Details</h2>
-            <div id="transectDetails"></div>
+            <button class="modal-close" onclick="closeTransectDetailsModal()">&times;</button>
+            <h2 style="color: #0c4a6e; margin-bottom: 1rem;" id="transectDetailsModalTitle">Transect Details</h2>
+            <div id="transectDetailsContent"></div>
         </div>
+    </div>
+
+    <!-- Full Assessment Modal -->
+    <div class="modal" id="fullAssessmentModal">
+        <div class="modal-content" id="fullAssessmentModalContent"></div>
     </div>
 
     <div class="species-detail-modal" id="speciesDetailModal">
         <div class="species-detail-content">
             <button class="modal-close" onclick="closeSpeciesModal()">&times;</button>
             <h2 style="color: #0c4a6e; margin-bottom: 1rem;" id="selectedSpeciesName">Species Name</h2>
-            
             <div class="species-stats">
-                <div class="stat-item">
-                    <div class="stat-value" id="speciesTotalCount">0</div>
-                    <div class="stat-label">Avg Coverage</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="speciesLocations">0</div>
-                    <div class="stat-label">Locations</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="speciesAssessments">0</div>
-                    <div class="stat-label">Transects</div>
-                </div>
+                <div class="stat-item"><div class="stat-value" id="speciesTotalCount">0</div><div class="stat-label">Avg Coverage</div></div>
+                <div class="stat-item"><div class="stat-value" id="speciesLocations">0</div><div class="stat-label">Locations</div></div>
+                <div class="stat-item"><div class="stat-value" id="speciesAssessments">0</div><div class="stat-label">Transects</div></div>
             </div>
-            
-            <div style="margin: 1rem 0;">
-                <h3 style="font-size: 0.9rem; color: #475569; margin-bottom: 0.5rem;">Found in:</h3>
-                <div id="speciesLocationList"></div>
-            </div>
-            
-            <div style="margin: 1rem 0;">
-                <h3 style="font-size: 0.9rem; color: #475569; margin-bottom: 0.5rem;">Distribution by depth:</h3>
-                <div id="speciesDepthDistribution"></div>
-            </div>
-            
+            <div style="margin: 1rem 0;"><h3 style="font-size: 0.9rem; color: #475569; margin-bottom: 0.5rem;">Found in:</h3><div id="speciesLocationList"></div></div>
+            <div style="margin: 1rem 0;"><h3 style="font-size: 0.9rem; color: #475569; margin-bottom: 0.5rem;">Distribution by depth:</h3><div id="speciesDepthDistribution"></div></div>
             <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                <button onclick="filterMapBySpecies(document.getElementById('selectedSpeciesName').textContent.split(' ')[0])" 
-                        style="flex:1; background:#0284c7; color:white; border:none; padding:0.6rem; border-radius:6px; cursor:pointer;">
-                    <i class="fas fa-filter"></i> Show Only This Species
-                </button>
-                <button onclick="clearSpeciesFilter()" 
-                        style="flex:1; background:#64748b; color:white; border:none; padding:0.6rem; border-radius:6px; cursor:pointer;">
-                    <i class="fas fa-times"></i> Clear Filter
-                </button>
+                <button onclick="filterMapBySpecies(document.getElementById('selectedSpeciesName').textContent.split(' ')[0])" style="flex:1; background:#0284c7; color:white; border:none; padding:0.6rem; border-radius:6px; cursor:pointer;"><i class="fas fa-filter"></i> Show Only This Species</button>
+                <button onclick="clearSpeciesFilter()" style="flex:1; background:#64748b; color:white; border:none; padding:0.6rem; border-radius:6px; cursor:pointer;"><i class="fas fa-times"></i> Clear Filter</button>
             </div>
         </div>
     </div>
@@ -1316,7 +1270,6 @@
         // Global variables
         let map;
         let trendChart;
-        let speciesBarChart;
         let markerCluster;
         let allAssessments = [];
         let currentSpeciesFilter = null;
@@ -1463,7 +1416,6 @@
 
         const methodologies = ['Point Intercept Transect', 'Line Intercept Transect', 'Photo Quadrat', 'Video Transect'];
         
-        // Function to generate assessment abstract
         function generateAssessmentAbstract(assessment) {
             const location = assessment.location;
             const cover = assessment.coralCover;
@@ -1471,7 +1423,6 @@
             const speciesCount = assessment.species.length;
             const transectCount = assessment.transects.length;
             
-            // Get dominant species (top 3 by coverage)
             const allSpecies = [];
             assessment.transects.forEach(t => {
                 t.deep.species.forEach(s => allSpecies.push(s));
@@ -1510,23 +1461,20 @@
             return `This assessment conducted at ${location} in ${year} recorded ${cover}% live coral cover, indicating ${healthStatus}. A total of ${speciesCount} coral species were identified, with ${dominantSpecies} being the dominant taxa. Data were collected from ${transectCount} transects. ${recommendation}`;
         }
         
-        // Function to close assessment details (show empty state)
         function closeAssessmentDetails() {
             const container = document.getElementById('selectedAssessment');
             container.innerHTML = `
                 <div class="empty-state">
                     <i class="fas fa-map-marker-alt" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
-                    <p>Click a marker on the map to view assessment details</p>
+                    <p>Click a marker on the map to view barangay details</p>
                 </div>
             `;
         }
         
-        // Generate assessment data with multiple assessments per year for each site (2020-2026)
         function generateAssessmentsFromCoordinates() {
             let assessments = [];
             let id = 1;
 
-            // Define health categories
             const healthCategories = [
                 { name: 'excellent', range: [65, 85], color: '#2e7d32' },
                 { name: 'good', range: [45, 64], color: '#4caf50' },
@@ -1536,23 +1484,19 @@
 
             function createAssessmentsForMunicipality(municipality, barangays, numAssessmentsPerBarangay = 4) {
                 barangays.forEach(barangay => {
-                    // Create multiple assessments per year for each site for ALL years 2020-2026
                     const years = [2020, 2021, 2022, 2023, 2024, 2025, 2026];
                     
                     years.forEach(year => {
-                        // Create 2-3 assessments per year for each site
                         const numPerYear = 2 + Math.floor(Math.random() * 2);
                         
                         for (let i = 0; i < numPerYear; i++) {
                             const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
                             const day = String(Math.floor(Math.random() * 28) + 1).padStart(2, '0');
                             
-                            // Assign health category based on barangay name with trend (improving over time for excellent sites)
                             let healthCategory;
                             let adjustedRange;
                             
                             if (barangay.name === 'Gumasa' || barangay.name === 'Kamanga' || barangay.name === 'Tambilil') {
-                                // Excellent sites - improving over time
                                 let improvement = (year - 2020) * 1.5;
                                 let baseRange = [65, 85];
                                 adjustedRange = [
@@ -1563,7 +1507,6 @@
                             } else if (barangay.name === 'Katubao' || barangay.name === 'Kling' || barangay.name === 'Lumasal') {
                                 healthCategory = healthCategories[1];
                             } else if (barangay.name === 'Poblacion' || barangay.name === 'Baluan' || barangay.name === 'Lun Padidu') {
-                                // Poor sites - slight recovery
                                 let recovery = (year - 2020) * 0.8;
                                 let baseRange = [10, 24];
                                 adjustedRange = [
@@ -1575,7 +1518,6 @@
                                 healthCategory = healthCategories[Math.floor(Math.random() * healthCategories.length)];
                             }
                             
-                            // Select random uploader and contributors
                             const uploader = uploaders[Math.floor(Math.random() * uploaders.length)];
                             const numContributors = 2 + Math.floor(Math.random() * 4);
                             const shuffledContributors = [...contributorsList].sort(() => 0.5 - Math.random());
@@ -1588,7 +1530,6 @@
                                 const startOffset = [(Math.random() - 0.5) * 0.002, (Math.random() - 0.5) * 0.002];
                                 const endOffset = [(Math.random() - 0.5) * 0.002, (Math.random() - 0.5) * 0.002];
                                 
-                                // Generate DEEP component
                                 const numDeepSpecies = 8 + Math.floor(Math.random() * 5);
                                 const shuffledDeep = [...speciesData].sort(() => 0.5 - Math.random());
                                 const selectedDeepSpecies = shuffledDeep.slice(0, numDeepSpecies);
@@ -1608,7 +1549,6 @@
                                     };
                                 });
                                 
-                                // Generate SHALLOW component
                                 const numShallowSpecies = 8 + Math.floor(Math.random() * 5);
                                 const shuffledShallow = [...speciesData].sort(() => 0.5 - Math.random());
                                 const selectedShallowSpecies = shuffledShallow.slice(0, numShallowSpecies);
@@ -1710,7 +1650,6 @@
                 });
             }
 
-            // Create assessments for each municipality
             createAssessmentsForMunicipality('Maasim', maasimBarangays, 4);
             createAssessmentsForMunicipality('Kiamba', kiambaBarangays, 3);
             createAssessmentsForMunicipality('Maitum', maitumBarangays, 4);
@@ -1722,14 +1661,11 @@
             return assessments;
         }
 
-        // Function to update sample sites based on actual data
         function updateSampleSites() {
-            // Get all unique locations with their latest coral cover
             const siteCoverage = {};
             
             allAssessments.forEach(assessment => {
                 const siteName = `${assessment.barangay}, ${assessment.municipality}`;
-                // Use the most recent assessment for each site
                 if (!siteCoverage[siteName] || new Date(assessment.assessmentDate) > new Date(siteCoverage[siteName].date)) {
                     siteCoverage[siteName] = {
                         cover: assessment.coralCover,
@@ -1741,7 +1677,6 @@
                 }
             });
             
-            // Convert to array and sort by coverage
             const sites = Object.entries(siteCoverage).map(([name, data]) => ({
                 name: name,
                 cover: data.cover,
@@ -1750,13 +1685,9 @@
                 municipality: data.municipality
             }));
             
-            // Get top 3 excellent sites (highest coverage)
             const excellentSites = [...sites].sort((a, b) => b.cover - a.cover).slice(0, 3);
-            
-            // Get top 3 poor sites (lowest coverage)
             const poorSites = [...sites].sort((a, b) => a.cover - b.cover).slice(0, 3);
             
-            // Update Excellent Sites section
             const excellentContainer = document.getElementById('sampleExcellentSites');
             let excellentHtml = '<strong>🌟 Top Excellent Sites:</strong><br>';
             excellentSites.forEach(site => {
@@ -1765,15 +1696,10 @@
                 else if (site.cover >= 45) healthClass = 'good';
                 else if (site.cover >= 25) healthClass = 'fair';
                 else healthClass = 'poor';
-                excellentHtml += `
-                    <span class="site-tag ${healthClass}" onclick="filterBySite('${site.barangay}')">
-                        ${site.name} (${site.cover}%)
-                    </span>
-                `;
+                excellentHtml += `<span class="site-tag ${healthClass}" onclick="selectBarangay('${site.barangay}')">${site.name} (${site.cover}%)</span>`;
             });
             excellentContainer.innerHTML = excellentHtml;
             
-            // Update Poor Sites section
             const poorContainer = document.getElementById('samplePoorSites');
             let poorHtml = '<strong>⚠️ Most Vulnerable Sites:</strong><br>';
             poorSites.forEach(site => {
@@ -1782,16 +1708,11 @@
                 else if (site.cover >= 45) healthClass = 'good';
                 else if (site.cover >= 25) healthClass = 'fair';
                 else healthClass = 'poor';
-                poorHtml += `
-                    <span class="site-tag ${healthClass}" onclick="filterBySite('${site.barangay}')">
-                        ${site.name} (${site.cover}%)
-                    </span>
-                `;
+                poorHtml += `<span class="site-tag ${healthClass}" onclick="selectBarangay('${site.barangay}')">${site.name} (${site.cover}%)</span>`;
             });
             poorContainer.innerHTML = poorHtml;
         }
 
-        // Helper function to get filtered assessments based on current filters
         function getFilteredAssessments() {
             const municipality = document.getElementById('municipalityFilter').value;
             const yearFrom = parseInt(document.getElementById('yearFrom').value);
@@ -1804,13 +1725,11 @@
                 filtered = filtered.filter(a => a.municipality === municipality);
             }
 
-            // Filter by year range
             filtered = filtered.filter(a => {
                 const year = parseInt(a.assessmentDate.split('-')[0]);
                 return year >= yearFrom && year <= yearTo;
             });
 
-            // Filter by health category
             if (health !== 'all') {
                 filtered = filtered.filter(a => {
                     if (health === 'excellent' && a.coralCover >= 65) return true;
@@ -1836,21 +1755,16 @@
             return filtered;
         }
 
-        // Update trend chart based on filters
         function updateTrendChart() {
             const filtered = getFilteredAssessments();
-            
-            // Get year range from filters
             const yearFrom = parseInt(document.getElementById('yearFrom').value);
             const yearTo = parseInt(document.getElementById('yearTo').value);
             
-            // Generate years array based on range
             const years = [];
             for (let y = yearFrom; y <= yearTo; y++) {
                 years.push(y);
             }
             
-            // Group by year and calculate mean coral cover
             const yearlyData = {};
             years.forEach(y => {
                 yearlyData[y] = { sum: 0, count: 0, values: [] };
@@ -1872,7 +1786,6 @@
                 return null;
             });
             
-            // Determine trend info text
             let trendInfoText = '';
             if (currentSiteFilter) {
                 const siteAssessments = filtered.filter(a => a.location === currentSiteFilter || a.barangay === currentSiteFilter);
@@ -1880,7 +1793,6 @@
                 const yearsWithData = years.filter(y => yearlyData[y].count > 0);
                 trendInfoText = `📊 ${currentSiteFilter} | ${totalAssessments} total assessment${totalAssessments > 1 ? 's' : ''} across ${yearsWithData.length} year${yearsWithData.length > 1 ? 's' : ''}`;
                 
-                // Show active site indicator and clear button
                 document.getElementById('activeSiteIndicator').style.display = 'flex';
                 document.getElementById('activeSiteName').textContent = currentSiteFilter;
                 document.getElementById('clearSiteBtn').style.display = 'block';
@@ -1902,585 +1814,280 @@
             if (trendChart) {
                 trendChart.data.labels = years.map(y => y.toString());
                 trendChart.data.datasets[0].data = averages;
-                
-                // Add custom tooltip to show assessment count on hover
-                trendChart.options.plugins.tooltip.callbacks.label = function(context) {
-                    const year = context.label;
-                    const yearIndex = years.indexOf(parseInt(year));
-                    const yearData = yearlyData[years[yearIndex]];
-                    if (yearData && yearData.count > 0) {
-                        return `Average Coral Cover: ${context.raw}%\n📊 Assessments: ${yearData.count}`;
-                    }
-                    return `Average Coral Cover: ${context.raw}%`;
-                };
-                
                 trendChart.update();
             }
         }
 
-        // Function to filter by specific site (called when clicking assessment marker)
-        function filterBySite(siteName) {
-            const assessment = allAssessments.find(a => a.barangay === siteName || a.location.includes(siteName));
-            if (assessment) {
-                currentSiteFilter = assessment.location;
-                showAssessmentDetails(assessment.id);
-                if (map) {
-                    map.setView(assessment.coordinates, 14);
+        function updateTrendChartForBarangay(barangayName) {
+            const barangayAssessments = allAssessments.filter(a => a.barangay === barangayName);
+            const years = [2020, 2021, 2022, 2023, 2024, 2025, 2026];
+            const yearlyData = {};
+            years.forEach(y => { yearlyData[y] = { sum: 0, count: 0 }; });
+            
+            barangayAssessments.forEach(a => {
+                const year = parseInt(a.assessmentDate.split('-')[0]);
+                if (yearlyData[year]) {
+                    yearlyData[year].sum += a.coralCover;
+                    yearlyData[year].count++;
                 }
-                updateTrendChart();
-                updateStatistics();
-                updateSpeciesSummary();
-                
-                // Show toast notification
-                const toast = document.createElement('div');
-                toast.style.position = 'fixed';
-                toast.style.bottom = '20px';
-                toast.style.right = '20px';
-                toast.style.background = '#0284c7';
-                toast.style.color = 'white';
-                toast.style.padding = '10px 20px';
-                toast.style.borderRadius = '8px';
-                toast.style.zIndex = '10000';
-                toast.style.fontSize = '14px';
-                toast.innerHTML = `<i class="fas fa-map-marker-alt"></i> Now viewing ${assessment.location}`;
-                document.body.appendChild(toast);
-                setTimeout(() => toast.remove(), 3000);
-            }
-        }
-
-        // Function to show trend for specific assessment
-        function showTrendForAssessment(assessmentId) {
-            const assessment = allAssessments.find(a => a.id === assessmentId);
-            if (assessment) {
-                currentSiteFilter = assessment.location;
-                updateTrendChart();
-                updateStatistics();
-                updateSpeciesSummary();
-                
-                // Show toast notification
-                const toast = document.createElement('div');
-                toast.style.position = 'fixed';
-                toast.style.bottom = '20px';
-                toast.style.right = '20px';
-                toast.style.background = '#0284c7';
-                toast.style.color = 'white';
-                toast.style.padding = '10px 20px';
-                toast.style.borderRadius = '8px';
-                toast.style.zIndex = '10000';
-                toast.style.fontSize = '14px';
-                toast.innerHTML = `<i class="fas fa-chart-line"></i> Now showing trend for ${assessment.location}`;
-                document.body.appendChild(toast);
-                setTimeout(() => toast.remove(), 3000);
-            }
-        }
-
-        // Clear site filter - GO BACK TO ALL LOCATIONS
-        function clearSiteFilter() {
-            currentSiteFilter = null;
-            closeAssessmentDetails(); // Close the assessment details
-            updateTrendChart();
-            updateStatistics();
-            updateSpeciesSummary();
-            
-            // Show toast notification
-            const toast = document.createElement('div');
-            toast.style.position = 'fixed';
-            toast.style.bottom = '20px';
-            toast.style.right = '20px';
-            toast.style.background = '#64748b';
-            toast.style.color = 'white';
-            toast.style.padding = '10px 20px';
-            toast.style.borderRadius = '8px';
-            toast.style.zIndex = '10000';
-            toast.style.fontSize = '14px';
-            toast.innerHTML = `<i class="fas fa-globe"></i> Showing all locations. Click any marker to view specific site.`;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-
-        // Update statistics based on filters - INCLUDING TOTAL TRANSECTS
-        function updateStatistics() {
-            const filtered = getFilteredAssessments();
-            
-            // Update total assessments
-            document.getElementById('totalAssessments').textContent = filtered.length;
-            
-            // Calculate total transects
-            let totalTransects = 0;
-            filtered.forEach(assessment => {
-                totalTransects += assessment.transects.length;
             });
-            document.getElementById('totalTransects').textContent = totalTransects;
             
-            // Update average coral cover
-            if (filtered.length > 0) {
-                const avgCover = (filtered.reduce((sum, a) => sum + a.coralCover, 0) / filtered.length).toFixed(1);
-                document.getElementById('avgCoverage').textContent = avgCover + '%';
-            } else {
-                document.getElementById('avgCoverage').textContent = '0%';
+            const averages = years.map(y => {
+                if (yearlyData[y].count > 0) {
+                    return (yearlyData[y].sum / yearlyData[y].count).toFixed(1);
+                }
+                return null;
+            });
+            
+            if (trendChart) {
+                trendChart.data.labels = years.map(y => y.toString());
+                trendChart.data.datasets[0].data = averages;
+                trendChart.update();
             }
             
-            // Update total unique species
-            const uniqueSpecies = new Set();
-            filtered.forEach(a => {
-                a.species.forEach(s => uniqueSpecies.add(s.code));
-            });
-            document.getElementById('totalSpecies').textContent = uniqueSpecies.size;
+            document.getElementById('trendInfo').innerHTML = `<i class="fas fa-chart-line"></i> ${barangayName} | ${barangayAssessments.length} total assessments`;
             
-            // Update health summary counts
-            const excellent = filtered.filter(a => a.coralCover >= 65).length;
-            const good = filtered.filter(a => a.coralCover >= 45 && a.coralCover < 65).length;
-            const fair = filtered.filter(a => a.coralCover >= 25 && a.coralCover < 45).length;
-            const poor = filtered.filter(a => a.coralCover < 25).length;
-            
-            document.getElementById('excellentCount').textContent = excellent;
-            document.getElementById('goodCount').textContent = good;
-            document.getElementById('fairCount').textContent = fair;
-            document.getElementById('poorCount').textContent = poor;
-            
-            // Update sample sites based on actual data
-            updateSampleSites();
+            document.getElementById('activeSiteIndicator').style.display = 'flex';
+            document.getElementById('activeSiteName').textContent = barangayName;
+            document.getElementById('clearSiteBtn').style.display = 'block';
         }
 
-        // Helper function to get full species name from code
+        // Function to show Transect Details with ALL species - CLOSES OTHER MODALS FIRST
+        function showTransectDetailsModal(transect) {
+            // Close any open modals first
+            closeFullAssessmentModal();
+            closeSpeciesModal();
+            
+            const modal = document.getElementById('transectDetailsModal');
+            const content = document.getElementById('transectDetailsContent');
+            
+            document.getElementById('transectDetailsModalTitle').textContent = `Transect ${transect.id} Details`;
+            
+            // Build Deep species list
+            let deepSpeciesHtml = '';
+            transect.deep.species.forEach(s => {
+                const fullName = getFullSpeciesName(s.code);
+                deepSpeciesHtml += `
+                    <div class="transect-species-item">
+                        <span class="species-name-code"><strong>${s.code}</strong> - ${fullName}</span>
+                        <span class="species-percent">${s.cover}%</span>
+                    </div>
+                `;
+            });
+            
+            // Build Shallow species list
+            let shallowSpeciesHtml = '';
+            transect.shallow.species.forEach(s => {
+                const fullName = getFullSpeciesName(s.code);
+                shallowSpeciesHtml += `
+                    <div class="transect-species-item">
+                        <span class="species-name-code"><strong>${s.code}</strong> - ${fullName}</span>
+                        <span class="species-percent">${s.cover}%</span>
+                    </div>
+                `;
+            });
+            
+            content.innerHTML = `
+                <div style="background: #f0f9ff; padding: 1rem; border-radius: 12px; margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                        <div>
+                            <span style="font-weight: 600;">📍 Start:</span> ${transect.start[0].toFixed(6)}, ${transect.start[1].toFixed(6)}
+                        </div>
+                        <div>
+                            <span style="font-weight: 600;">📍 End:</span> ${transect.end[0].toFixed(6)}, ${transect.end[1].toFixed(6)}
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="depth-section depth-deep">
+                        <div class="depth-title">
+                            <span class="depth-badge depth-deep-badge">🐟 Deep Zone</span>
+                            <span style="color: #0e7490; font-weight: 700; font-size: 1rem;">${transect.deep.cover}%</span>
+                        </div>
+                        <div class="transect-species-list">
+                            ${deepSpeciesHtml || '<p class="empty-state">No species recorded</p>'}
+                        </div>
+                    </div>
+                    
+                    <div class="depth-section depth-shallow">
+                        <div class="depth-title">
+                            <span class="depth-badge depth-shallow-badge">☀️ Shallow Zone</span>
+                            <span style="color: #0891b2; font-weight: 700; font-size: 1rem;">${transect.shallow.cover}%</span>
+                        </div>
+                        <div class="transect-species-list">
+                            ${shallowSpeciesHtml || '<p class="empty-state">No species recorded</p>'}
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 1.5rem; padding: 0.8rem; background: #f8fafc; border-radius: 10px; text-align: center;">
+                    <strong>📊 Total Transect Cover:</strong> ${transect.totalCover}%
+                    <span class="mean-badge" style="margin-left: 0.5rem;">mean of deep & shallow</span>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <button onclick="zoomToTransectLocation(${transect.start[0]}, ${transect.start[1]})" 
+                            style="flex:1; background:#0284c7; color:white; border:none; padding:0.6rem; border-radius:8px; cursor:pointer;">
+                        <i class="fas fa-search-location"></i> Zoom to Start
+                    </button>
+                    <button onclick="zoomToTransectLocation(${transect.end[0]}, ${transect.end[1]})" 
+                            style="flex:1; background:#0e7490; color:white; border:none; padding:0.6rem; border-radius:8px; cursor:pointer;">
+                        <i class="fas fa-search-location"></i> Zoom to End
+                    </button>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+        }
+        
+        function zoomToTransectLocation(lat, lng) {
+            if (map) {
+                map.setView([lat, lng], 16);
+            }
+            closeTransectDetailsModal();
+        }
+        
+        function closeTransectDetailsModal() {
+            document.getElementById('transectDetailsModal').style.display = 'none';
+        }
+
         function getFullSpeciesName(code) {
             const species = speciesData.find(s => s.code === code);
             return species ? species.subCategory : code;
         }
 
-        // Initialize bar chart for species distribution with horizontal scrolling
-        function initializeSpeciesBarChart() {
-            const ctx = document.getElementById('speciesBarChart').getContext('2d');
-            
-            speciesBarChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Average Coverage (%)',
-                        data: [],
-                        backgroundColor: 'rgba(2, 132, 199, 0.7)',
-                        borderColor: '#0284c7',
-                        borderWidth: 1,
-                        borderRadius: 6,
-                        barPercentage: 0.7,
-                        categoryPercentage: 0.8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                title: function(context) {
-                                    const speciesCode = context[0].label;
-                                    const species = speciesData.find(s => s.code === speciesCode);
-                                    if (species) {
-                                        return species.subCategory;
-                                    }
-                                    return speciesCode;
-                                },
-                                label: function(context) {
-                                    return `Coverage: ${context.raw}%`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Average Coverage (%)',
-                                font: {
-                                    size: 10
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(0,0,0,0.05)'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Species Code',
-                                font: {
-                                    size: 10
-                                }
-                            },
-                            ticks: {
-                                maxRotation: 45,
-                                minRotation: 45,
-                                font: {
-                                    size: 9
-                                },
-                                autoSkip: false
-                            },
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Update species distribution bar chart
-        function updateSpeciesDistribution() {
-            const area = document.getElementById('speciesArea').value;
-            const filteredAssessments = getFilteredAssessments();
-            const areaFiltered = area === 'all' 
-                ? filteredAssessments 
-                : filteredAssessments.filter(a => a.municipality === area);
-            
-            const speciesTotals = {};
-            const speciesCounts = {};
-            
-            areaFiltered.forEach(a => {
-                a.transects.forEach(t => {
-                    t.deep.species.forEach(s => {
-                        if (!speciesTotals[s.code]) {
-                            speciesTotals[s.code] = 0;
-                            speciesCounts[s.code] = 0;
-                        }
-                        speciesTotals[s.code] += s.cover;
-                        speciesCounts[s.code] += 1;
-                    });
-                    t.shallow.species.forEach(s => {
-                        if (!speciesTotals[s.code]) {
-                            speciesTotals[s.code] = 0;
-                            speciesCounts[s.code] = 0;
-                        }
-                        speciesTotals[s.code] += s.cover;
-                        speciesCounts[s.code] += 1;
-                    });
-                });
-            });
-            
-            const speciesMeans = {};
-            Object.keys(speciesTotals).forEach(code => {
-                speciesMeans[code] = speciesTotals[code] / speciesCounts[code];
-            });
-            
-            // Get all species sorted by coverage (show all, not just top 8)
-            const sortedSpecies = Object.entries(speciesMeans)
-                .sort((a, b) => b[1] - a[1]);
-            
-            const labels = sortedSpecies.map(s => s[0]);
-            const data = sortedSpecies.map(s => Math.round(s[1] * 10) / 10);
-            
-            // Calculate required width based on number of species (100px per species minimum)
-            const chartContainer = document.querySelector('.species-distribution');
-            if (chartContainer && speciesBarChart) {
-                const minWidth = Math.max(600, labels.length * 55);
-                chartContainer.style.minWidth = minWidth + 'px';
-                
-                speciesBarChart.data.labels = labels;
-                speciesBarChart.data.datasets[0].data = data;
-                speciesBarChart.update();
-            }
-            
-            document.getElementById('totalSpeciesCount').textContent = Object.keys(speciesMeans).length;
-        }
-
-        // Initialize everything
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded, generating assessment data...');
-            
-            allAssessments = generateAssessmentsFromCoordinates();
-            console.log(`Generated ${allAssessments.length} assessments`);
-
-            updateStatistics();
-
-            initializeMap();
-            initializeCharts();
-            initializeSpeciesBarChart();
-
-            updateSpeciesSummary();
-
-            // Add event listeners for year range inputs
-            document.getElementById('yearFrom').addEventListener('change', function() {
-                filterMarkers();
-                updateStatistics();
-                updateSpeciesSummary();
-                updateTrendChart();
-                updateSpeciesDistribution();
-            });
-            document.getElementById('yearTo').addEventListener('change', function() {
-                filterMarkers();
-                updateStatistics();
-                updateSpeciesSummary();
-                updateTrendChart();
-                updateSpeciesDistribution();
-            });
-            document.getElementById('municipalityFilter').addEventListener('change', function() {
-                filterMarkers();
-                updateStatistics();
-                updateSpeciesSummary();
-                updateTrendChart();
-                updateSpeciesDistribution();
-            });
-            document.getElementById('healthFilter').addEventListener('change', function() {
-                filterMarkers();
-                updateStatistics();
-                updateSpeciesSummary();
-                updateTrendChart();
-                updateSpeciesDistribution();
-            });
-            document.getElementById('speciesArea').addEventListener('change', function() {
-                updateSpeciesSummary();
-                updateSpeciesDistribution();
-            });
-        });
-
-        function filterMarkers() {
-            const filtered = getFilteredAssessments();
-            addMarkersToCluster(filtered);
-            console.log(`Filtered to ${filtered.length} assessments`);
-            updateFilterIndicator();
-        }
-
-        function filterMapBySpecies(speciesCode) {
-            currentSpeciesFilter = speciesCode;
-            currentSiteFilter = null;
-            
-            const species = speciesData.find(s => s.code === speciesCode);
-            if (species) {
-                document.getElementById('filterSpeciesName').textContent = `Showing sites with ${species.code}`;
-                document.getElementById('activeFilterSpecies').textContent = species.code;
-                document.getElementById('speciesFilterIndicator').style.display = 'flex';
-                document.getElementById('mapFilterIndicator').classList.add('show');
-                
-                document.querySelectorAll('.species-item').forEach(item => {
-                    item.classList.remove('active');
-                    if (item.dataset.species === speciesCode) {
-                        item.classList.add('active');
-                    }
-                });
-            }
-            
-            filterMarkers();
-            updateStatistics();
-            updateSpeciesSummary();
-            updateTrendChart();
-            updateSpeciesDistribution();
-        }
-
-        function clearSpeciesFilter() {
-            currentSpeciesFilter = null;
-            document.getElementById('speciesFilterIndicator').style.display = 'none';
-            document.getElementById('mapFilterIndicator').classList.remove('show');
-            
-            document.querySelectorAll('.species-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            filterMarkers();
-            updateStatistics();
-            updateSpeciesSummary();
-            updateTrendChart();
-            updateSpeciesDistribution();
-        }
-
-        function updateFilterIndicator() {
-            const indicator = document.getElementById('mapFilterIndicator');
-            if (currentSpeciesFilter) {
-                indicator.classList.add('show');
+        // Toggle dropdown function
+        function toggleDropdown(dropdownId) {
+            const content = document.getElementById(dropdownId + '-content');
+            const icon = document.getElementById(dropdownId + '-icon');
+            if (content.classList.contains('open')) {
+                content.classList.remove('open');
+                icon.classList.remove('rotated');
             } else {
-                indicator.classList.remove('show');
+                content.classList.add('open');
+                icon.classList.add('rotated');
             }
         }
 
-        function initializeMap() {
-            try {
-                map = L.map('map').setView([6.0, 124.9], 9);
-
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap contributors',
-                    maxZoom: 18
-                }).addTo(map);
-
-                markerCluster = L.markerClusterGroup({
-                    iconCreateFunction: function(cluster) {
-                        const markers = cluster.getAllChildMarkers();
-                        const count = markers.length;
-                        
-                        let clusterClass = 'marker-cluster-small';
-                        if (count >= 6 && count <= 15) {
-                            clusterClass = 'marker-cluster-medium';
-                        } else if (count >= 16) {
-                            clusterClass = 'marker-cluster-large';
-                        }
-                        
-                        return L.divIcon({
-                            html: '<div><span>' + count + '</span></div>',
-                            className: 'marker-cluster ' + clusterClass,
-                            iconSize: [40, 40]
-                        });
-                    },
-                    maxClusterRadius: 50,
-                    spiderfyOnMaxZoom: true,
-                    showCoverageOnHover: true,
-                    zoomToBoundsOnClick: true
-                });
-
-                addMarkersToCluster(allAssessments);
-                map.addLayer(markerCluster);
-                
-                console.log('Map initialized successfully');
-                
-            } catch (error) {
-                console.error('Error initializing map:', error);
-                document.getElementById('map').innerHTML = '<div style="padding: 2rem; text-align: center; color: red;">Error loading map. Please refresh.</div>';
+        // MAIN FUNCTION: Show Barangay Details with DROPDOWN for assessments
+        function selectBarangay(barangayName) {
+            const barangayAssessments = allAssessments.filter(a => a.barangay === barangayName);
+            if (barangayAssessments.length === 0) return;
+            
+            currentSiteFilter = barangayName;
+            const municipality = barangayAssessments[0].municipality;
+            const latest = barangayAssessments.sort((a, b) => new Date(b.assessmentDate) - new Date(a.assessmentDate))[0];
+            const avgCover = (barangayAssessments.reduce((s, a) => s + a.coralCover, 0) / barangayAssessments.length).toFixed(1);
+            const totalAssessmentsCount = barangayAssessments.length;
+            
+            const uniqueSpecies = new Set();
+            barangayAssessments.forEach(a => {
+                a.species.forEach(s => uniqueSpecies.add(s.code));
+            });
+            const speciesCount = uniqueSpecies.size;
+            
+            let healthColor = '';
+            let healthText = '';
+            if (latest.coralCover >= 65) {
+                healthColor = 'badge-excellent';
+                healthText = 'Excellent';
+            } else if (latest.coralCover >= 45) {
+                healthColor = 'badge-good';
+                healthText = 'Good';
+            } else if (latest.coralCover >= 25) {
+                healthColor = 'badge-fair';
+                healthText = 'Fair';
+            } else {
+                healthColor = 'badge-poor';
+                healthText = 'Poor';
             }
-        }
-
-        function addMarkersToCluster(assessments) {
-            markerCluster.clearLayers();
-
-            assessments.forEach(assessment => {
-                let color;
-                if (assessment.coralCover >= 65) color = '#2e7d32';
-                else if (assessment.coralCover >= 45) color = '#4caf50';
-                else if (assessment.coralCover >= 25) color = '#ffb74d';
-                else color = '#f44336';
+            
+            const sortedAssessments = [...barangayAssessments].sort((a, b) => new Date(b.assessmentDate) - new Date(a.assessmentDate));
+            
+            // Build assessments list HTML for dropdown
+            let assessmentsListHtml = '';
+            sortedAssessments.forEach(ass => {
+                let assHealthClass = '';
+                if (ass.coralCover >= 65) assHealthClass = 'badge-excellent';
+                else if (ass.coralCover >= 45) assHealthClass = 'badge-good';
+                else if (ass.coralCover >= 25) assHealthClass = 'badge-fair';
+                else assHealthClass = 'badge-poor';
                 
-                const marker = L.circleMarker(assessment.coordinates, {
-                    radius: 8,
-                    fillColor: color,
-                    color: 'white',
-                    weight: 2,
-                    opacity: 1,
-                    fillOpacity: 0.8
-                });
-                
-                let badgeClass = '';
-                if (assessment.coralCover >= 65) badgeClass = 'badge-excellent';
-                else if (assessment.coralCover >= 45) badgeClass = 'badge-good';
-                else if (assessment.coralCover >= 25) badgeClass = 'badge-fair';
-                else badgeClass = 'badge-poor';
-                
-                const speciesCodes = assessment.species.map(s => s.code).join(', ');
-                
-                marker.bindPopup(`
-                    <div style="font-family: 'Poppins', sans-serif; min-width: 220px;">
-                        <h3 style="margin:0 0 8px; color:#0c4a6e; font-size:16px;">${assessment.location}</h3>
-                        <p style="margin:0 0 5px; font-size:13px;"><strong>Barangay:</strong> ${assessment.barangay}</p>
-                        <p style="margin:0 0 5px; font-size:13px;"><strong>Municipality:</strong> ${assessment.municipality}</p>
-                        <p style="margin:0 0 5px; font-size:13px;"><strong>Date:</strong> ${assessment.assessmentDate}</p>
-                        <p style="margin:0 0 5px; font-size:13px;">
-                            <strong>Coral Cover:</strong> ${assessment.coralCover}% 
-                            <span class="health-badge ${badgeClass}" style="margin-left: 0.5rem;">${assessment.healthClass.toUpperCase()}</span>
-                        </p>
-                        <p style="margin:0 0 5px; font-size:13px;"><strong>Uploaded by:</strong> ${assessment.uploader.name}</p>
-                        <p style="margin:0 0 5px; font-size:13px;"><strong>Species:</strong> ${assessment.species.length}</p>
-                        <p style="margin:0 0 5px; font-size:13px;"><strong>Species Codes:</strong> ${speciesCodes}</p>
-                        <p style="margin:0 0 5px; font-size:13px;"><strong>Transects:</strong> ${assessment.transects.length}</p>
-                        <button onclick="showAssessmentDetails(${assessment.id})" 
-                                style="background:#0284c7; color:white; border:none; padding:8px 12px; border-radius:5px; cursor:pointer; width:100%; font-size:13px; margin-top:8px;">
-                            View Full Details
-                        </button>
-                        <button onclick="showTrendForAssessment(${assessment.id})" 
-                                style="background:#0e7490; color:white; border:none; padding:6px 10px; border-radius:5px; cursor:pointer; width:100%; font-size:12px; margin-top:5px;">
-                            <i class="fas fa-chart-line"></i> View Trend
-                        </button>
+                assessmentsListHtml += `
+                    <div class="assessment-badge" onclick="showFullAssessmentDetails(${ass.id})" style="cursor: pointer;">
+                        <span><i class="fas fa-calendar-alt"></i> ${ass.assessmentDate}</span>
+                        <span class="health-badge ${assHealthClass}" style="font-size: 0.65rem;">${ass.coralCover}%</span>
+                        <i class="fas fa-chevron-right" style="font-size: 0.7rem;"></i>
                     </div>
-                `);
+                `;
+            });
+            
+            // Generate unique ID for this dropdown
+            const dropdownId = 'assessments-dropdown';
+            
+            const container = document.getElementById('selectedAssessment');
+            container.innerHTML = `
+                <div class="barangay-header">
+                    <div class="barangay-name">${barangayName}</div>
+                    <div class="municipality-tag"><i class="fas fa-city"></i> ${municipality}</div>
+                </div>
+                <div class="detail-row">
+                    <span>🏝️ Latest coral cover</span>
+                    <span class="health-badge ${healthColor}">${latest.coralCover}% (${healthText})</span>
+                </div>
+                <div class="detail-row">
+                    <span>📊 Mean cover (all years)</span>
+                    <span><strong>${avgCover}%</strong></span>
+                </div>
+                <div class="detail-row">
+                    <span>🧪 Total assessments</span>
+                    <span><strong>${totalAssessmentsCount}</strong> surveys</span>
+                </div>
+                <div class="detail-row">
+                    <span>🐠 Coral species found</span>
+                    <span><strong>${speciesCount}</strong> unique</span>
+                </div>
+                <div class="detail-row">
+                    <span>📅 First assessment</span>
+                    <span>${barangayAssessments.map(a => a.assessmentDate).sort()[0]}</span>
+                </div>
+                <div class="detail-row">
+                    <span>🔄 Last assessment</span>
+                    <span>${latest.assessmentDate}</span>
+                </div>
                 
-                markerCluster.addLayer(marker);
-            });
-        }
-
-        function initializeCharts() {
-            const ctx = document.getElementById('trendChart').getContext('2d');
+                <!-- DROPDOWN SECTION -->
+                <div class="dropdown-header" onclick="toggleDropdown('${dropdownId}')">
+                    <span class="detail-label" style="margin-bottom: 0;"><i class="fas fa-list"></i> 📋 All Assessments (${totalAssessmentsCount})</span>
+                    <i class="fas fa-chevron-down dropdown-icon" id="${dropdownId}-icon"></i>
+                </div>
+                <div class="dropdown-content" id="${dropdownId}-content">
+                    ${assessmentsListHtml}
+                </div>
+                
+                <div style="margin-top: 1rem;">
+                    <button class="back-button" onclick="clearSiteFilter()" style="margin-bottom: 0;">
+                        <i class="fas fa-globe"></i> Back to All Barangays
+                    </button>
+                </div>
+            `;
             
-            const years = [2020, 2021, 2022, 2023, 2024, 2025, 2026];
-            const initialData = [null, null, null, null, null, null, null];
+            updateTrendChartForBarangay(barangayName);
             
-            trendChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: years.map(y => y.toString()),
-                    datasets: [{
-                        label: 'Average Coral Cover %',
-                        data: initialData,
-                        borderColor: '#0284c7',
-                        backgroundColor: 'rgba(2, 132, 199, 0.1)',
-                        tension: 0.4,
-                        fill: true,
-                        pointBackgroundColor: '#0284c7',
-                        pointBorderColor: 'white',
-                        pointBorderWidth: 2,
-                        pointRadius: 6,
-                        pointHoverRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { 
-                            mode: 'index', 
-                            intersect: false,
-                            callbacks: {
-                                label: function(context) {
-                                    return `Average Coral Cover: ${context.raw}%`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            grid: { color: 'rgba(0,0,0,0.05)' },
-                            title: {
-                                display: true,
-                                text: 'Coral Cover %',
-                                font: { size: 11 }
-                            }
-                        },
-                        x: { 
-                            grid: { display: false },
-                            title: {
-                                display: true,
-                                text: 'Year',
-                                font: { size: 11 }
-                            }
-                        }
-                    }
-                }
-            });
+            // Zoom to the barangay location
+            const coords = barangayAssessments[0].coordinates;
+            if (map) {
+                map.setView(coords, 13);
+            }
+        }
+
+        function showFullAssessmentDetails(assessmentId) {
+            // Close transect modal if open
+            closeTransectDetailsModal();
             
-            // Initial update
-            updateTrendChart();
-        }
-
-        function showSpeciesListView() {
-            document.getElementById('listViewBtn').classList.add('active');
-            document.getElementById('distViewBtn').classList.remove('active');
-            document.getElementById('speciesListView').style.display = 'block';
-            document.getElementById('speciesDistributionView').style.display = 'none';
-        }
-
-        function showSpeciesDistribution() {
-            document.getElementById('distViewBtn').classList.add('active');
-            document.getElementById('listViewBtn').classList.remove('active');
-            document.getElementById('speciesListView').style.display = 'none';
-            document.getElementById('speciesDistributionView').style.display = 'block';
-            updateSpeciesDistribution();
-        }
-
-        window.showAssessmentDetails = function(assessmentId) {
             const assessment = allAssessments.find(a => a.id === assessmentId);
             if (!assessment) return;
-
-            const container = document.getElementById('selectedAssessment');
             
             let healthClass, healthText, badgeClass;
             if (assessment.coralCover >= 65) {
@@ -2503,458 +2110,272 @@
             
             let contributorsHtml = '';
             assessment.contributors.forEach(contributor => {
-                contributorsHtml += `
-                    <span class="contributor-tag">
-                        <i class="fas fa-user"></i>
-                        ${contributor.name} (${contributor.role})
-                    </span>
-                `;
+                contributorsHtml += `<span class="contributor-tag"><i class="fas fa-user"></i> ${contributor.name} (${contributor.role})</span>`;
             });
             
             let transectsHtml = '';
             assessment.transects.forEach((t, index) => {
-                const transectStr = JSON.stringify(t).replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                
-                const topDeepSpecies = t.deep.species.slice(0, 2).map(s => `${s.code}: ${s.cover}%`).join(', ');
-                const topShallowSpecies = t.shallow.species.slice(0, 2).map(s => `${s.code}: ${s.cover}%`).join(', ');
-                
                 transectsHtml += `
-                    <div class="transect-item" onclick='showTransectDetails(${transectStr})'>
+                    <div class="transect-item" onclick="showTransectDetailsModal(${JSON.stringify(t).replace(/'/g, "\\'").replace(/"/g, '&quot;')})">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <strong>${t.id}</strong>
-                            <span style="font-size:0.75rem; color:#475569;">
-                                Mean: ${t.totalCover}%
-                                <span class="mean-badge">avg</span>
-                            </span>
+                            <span style="font-size:0.75rem; color:#475569;">Mean: ${t.totalCover}%</span>
                         </div>
                         <div class="transect-coords">
                             Start: ${t.start[0].toFixed(4)}, ${t.start[1].toFixed(4)}<br>
                             End: ${t.end[0].toFixed(4)}, ${t.end[1].toFixed(4)}
                         </div>
-                        
                         <div class="transect-summary">
-                            <div class="depth-summary deep">
-                                <strong>Deep:</strong> ${t.deep.cover}%<br>
-                                <small>${topDeepSpecies}</small>
-                            </div>
-                            <div class="depth-summary shallow">
-                                <strong>Shallow:</strong> ${t.shallow.cover}%<br>
-                                <small>${topShallowSpecies}</small>
-                            </div>
+                            <div class="depth-summary deep"><strong>Deep:</strong> ${t.deep.cover}%<br><small>${t.deep.species.slice(0, 2).map(s => `${s.code}: ${s.cover}%`).join(', ')}</small></div>
+                            <div class="depth-summary shallow"><strong>Shallow:</strong> ${t.shallow.cover}%<br><small>${t.shallow.species.slice(0, 2).map(s => `${s.code}: ${s.cover}%`).join(', ')}</small></div>
                         </div>
-                        
-                        <div class="coverage-bar">
-                            <div class="coverage-fill" style="width: ${t.totalCover}%"></div>
-                        </div>
-                        <div style="font-size: 0.7rem; color: #64748b; text-align: right;">
-                            ${t.deep.species.length + t.shallow.species.length} species total
-                        </div>
+                        <div class="coverage-bar"><div class="coverage-fill" style="width: ${t.totalCover}%"></div></div>
                     </div>
                 `;
             });
             
             let speciesHtml = '';
             assessment.species.forEach(s => {
-                speciesHtml += `
-                    <span class="species-badge-small" onclick="filterMapBySpecies('${s.code}')">
-                        ${s.code}
-                    </span>
-                `;
+                speciesHtml += `<span class="species-badge-small" onclick="filterMapBySpecies('${s.code}')">${s.code}</span>`;
             });
             
             let photosHtml = '';
             assessment.photos.forEach(photo => {
-                photosHtml += `
-                    <div class="photo-item" onclick="viewPhoto('${photo}')">
-                        <i class="fas fa-camera"></i>
-                        <span>${photo}</span>
-                    </div>
-                `;
+                photosHtml += `<div class="photo-item" onclick="viewPhoto('${photo}')"><i class="fas fa-camera"></i><span>${photo}</span></div>`;
             });
             
-            // Generate abstract
             const abstract = generateAssessmentAbstract(assessment);
             
-            // Add back button at the top
-            const backButton = `
-                <button onclick="clearSiteFilter()" class="back-button">
-                    <i class="fas fa-arrow-left"></i> Back to All Locations
-                </button>
+            const modalContent = document.getElementById('fullAssessmentModalContent');
+            modalContent.innerHTML = `
+                <button class="modal-close" onclick="closeFullAssessmentModal()">&times;</button>
+                <h2 style="color: #0c4a6e; margin-bottom: 1rem;">${assessment.location}</h2>
+                <div class="assessment-detail"><div class="detail-label">Location</div><div class="detail-value"><strong>${assessment.location}</strong></div><div>${assessment.barangay}, ${assessment.municipality}</div></div>
+                <div class="assessment-detail"><div class="detail-label">Assessment Date</div><div class="detail-value">${assessment.assessmentDate}</div></div>
+                <div class="assessment-detail"><div class="detail-label">Methodology</div><div class="detail-value">${assessment.methodology}</div></div>
+                <div class="assessment-detail"><div class="detail-label">Coral Cover</div><div class="detail-value">${assessment.coralCover}% <span class="health-badge ${badgeClass}">${healthText}</span></div></div>
+                <div class="abstract-box"><div class="abstract-title"><i class="fas fa-file-alt"></i> Assessment Abstract</div><p>${abstract}</p></div>
+                <div class="assessment-detail"><div class="detail-label">Uploaded By</div><div class="detail-value"><span class="uploader-badge"><i class="fas fa-cloud-upload-alt"></i> ${assessment.uploader.name} (${assessment.uploader.role})</span><div style="font-size:0.75rem;">${assessment.uploader.email}<br>${assessment.uploader.institution}</div></div></div>
+                <div class="assessment-detail"><div class="detail-label">Contributors (${assessment.contributors.length})</div><div class="contributor-list">${contributorsHtml}</div></div>
+                <div class="assessment-detail"><div class="detail-label">Species Found (${assessment.species.length})</div><div>${speciesHtml}</div></div>
+                <div class="assessment-detail"><div class="detail-label">Transects (Click on any transect to see all species)</div>${transectsHtml}</div>
+                <div class="assessment-detail"><div class="detail-label">Assessment Photos</div><div class="photo-grid">${photosHtml}</div></div>
+                <button onclick="closeFullAssessmentModal()" style="width:100%; background:#0284c7; color:white; border:none; padding:0.6rem; border-radius:8px; cursor:pointer; margin-top:0.5rem;">Close</button>
             `;
-            
-            container.innerHTML = backButton + `
-                <div class="assessment-detail">
-                    <div class="detail-label">Location</div>
-                    <div class="detail-value"><strong>${assessment.location}</strong></div>
-                    <div style="margin-top: 0.25rem;">${assessment.barangay}, ${assessment.municipality}</div>
-                </div>
-                <div class="assessment-detail">
-                    <div class="detail-label">Assessment Date</div>
-                    <div class="detail-value">${assessment.assessmentDate}</div>
-                </div>
-                <div class="assessment-detail">
-                    <div class="detail-label">Methodology</div>
-                    <div class="detail-value">${assessment.methodology}</div>
-                </div>
-                <div class="assessment-detail">
-                    <div class="detail-label">Coral Cover (Mean of ${assessment.transects.length} Transects)</div>
-                    <div class="detail-value">
-                        <span class="color-box ${healthClass}" style="display: inline-block; width: 15px; height: 15px; margin-right: 0.5rem;"></span>
-                        ${assessment.coralCover}% 
-                        <span class="health-badge ${badgeClass}" style="margin-left: 0.5rem;">${healthText}</span>
-                    </div>
-                </div>
-                <div class="abstract-box">
-                    <div class="abstract-title">
-                        <i class="fas fa-file-alt"></i> Assessment Abstract
-                    </div>
-                    <p>${abstract}</p>
-                </div>
-                <div class="assessment-detail">
-                    <div class="detail-label">Uploaded By</div>
-                    <div class="detail-value">
-                        <span class="uploader-badge">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            ${assessment.uploader.name} (${assessment.uploader.role})
-                        </span>
-                        <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem;">
-                            <i class="fas fa-envelope"></i> ${assessment.uploader.email}<br>
-                            <i class="fas fa-building"></i> ${assessment.uploader.institution}
-                        </div>
-                    </div>
-                </div>
-                <div class="assessment-detail">
-                    <div class="detail-label">Contributors (${assessment.contributors.length})</div>
-                    <div class="contributor-list">
-                        ${contributorsHtml}
-                    </div>
-                </div>
-                <div class="assessment-detail">
-                    <div class="detail-label">Species Found (${assessment.species.length})</div>
-                    <div style="margin-top: 0.5rem;">
-                        ${speciesHtml}
-                    </div>
-                </div>
-                <div class="assessment-detail">
-                    <div class="detail-label">Transects (Click to view details)</div>
-                    <div style="margin-top: 0.5rem; max-height: 300px; overflow-y: auto;">
-                        ${transectsHtml}
-                    </div>
-                </div>
-                <div class="assessment-detail">
-                    <div class="detail-label">Assessment Photos</div>
-                    <div class="photo-grid">
-                        ${photosHtml}
-                    </div>
-                </div>
-                <div class="assessment-detail">
-                    <div class="detail-label">Thesis File</div>
-                    <a href="#" class="file-link" onclick="downloadThesis('${assessment.thesisFile}')">
-                        <i class="fas fa-file-pdf"></i>
-                        ${assessment.thesisFile}
-                    </a>
-                </div>
-                <div class="assessment-detail">
-                    <button onclick="showTrendForAssessment(${assessment.id})" 
-                            style="width:100%; background:#0284c7; color:white; border:none; padding:0.6rem; border-radius:8px; cursor:pointer; margin-top:0.5rem;">
-                        <i class="fas fa-chart-line"></i> View Historical Trend for this Site
-                    </button>
-                </div>
-            `;
-        };
-
-        window.showTransectDetails = function(transect) {
-            const modal = document.getElementById('transectModal');
-            const details = document.getElementById('transectDetails');
-            
-            document.getElementById('transectModalTitle').textContent = `Transect ${transect.id} Details`;
-            
-            let deepSpeciesHtml = '';
-            transect.deep.species.forEach(s => {
-                const fullName = getFullSpeciesName(s.code);
-                deepSpeciesHtml += `
-                    <div class="species-row" onclick="filterMapBySpecies('${s.code}')">
-                        <div class="species-info">
-                            <span class="species-code-name">${s.code}</span>
-                            <span class="species-full-name">${fullName}</span>
-                        </div>
-                        <span class="species-cover">${s.cover}%</span>
-                    </div>
-                `;
-            });
-            
-            let shallowSpeciesHtml = '';
-            transect.shallow.species.forEach(s => {
-                const fullName = getFullSpeciesName(s.code);
-                shallowSpeciesHtml += `
-                    <div class="species-row" onclick="filterMapBySpecies('${s.code}')">
-                        <div class="species-info">
-                            <span class="species-code-name">${s.code}</span>
-                            <span class="species-full-name">${fullName}</span>
-                        </div>
-                        <span class="species-cover">${s.cover}%</span>
-                    </div>
-                `;
-            });
-            
-            details.innerHTML = `
-                <div style="background: #f8fafc; padding: 1rem; border-radius: 10px; margin-bottom: 1rem;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                        <div>
-                            <span style="font-weight: 600;">Mean Transect Cover:</span> 
-                            <span style="font-size: 1.2rem; font-weight: 700; color: #0284c7;">${transect.totalCover}%</span>
-                            <span class="mean-badge">average of deep & shallow</span>
-                        </div>
-                    </div>
-                    <div style="background: white; padding: 0.75rem; border-radius: 8px;">
-                        <p style="margin-bottom: 0.2rem;"><strong>Start:</strong> ${transect.start[0].toFixed(6)}, ${transect.start[1].toFixed(6)}</p>
-                        <p><strong>End:</strong> ${transect.end[0].toFixed(6)}, ${transect.end[1].toFixed(6)}</p>
-                    </div>
-                </div>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div class="depth-section depth-deep">
-                        <div class="depth-title">
-                            <span class="depth-badge depth-deep-badge">Deep</span>
-                            <span style="color: #0e7490; font-weight: 600;">${transect.deep.cover}%</span>
-                        </div>
-                        <div style="max-height: 300px; overflow-y: auto;">
-                            ${deepSpeciesHtml}
-                        </div>
-                    </div>
-                    
-                    <div class="depth-section depth-shallow">
-                        <div class="depth-title">
-                            <span class="depth-badge depth-shallow-badge">Shallow</span>
-                            <span style="color: #0891b2; font-weight: 600;">${transect.shallow.cover}%</span>
-                        </div>
-                        <div style="max-height: 300px; overflow-y: auto;">
-                            ${shallowSpeciesHtml}
-                        </div>
-                    </div>
-                </div>
-                
-                <div style="margin-top: 1rem; display: flex; gap: 1rem;">
-                    <button onclick="zoomToTransect(${transect.start[0]}, ${transect.start[1]})" 
-                            style="flex:1; background:#0284c7; color:white; border:none; padding:0.6rem; border-radius:6px; cursor:pointer;">
-                        <i class="fas fa-search-location"></i> Zoom to Start
-                    </button>
-                    <button onclick="zoomToTransect(${transect.end[0]}, ${transect.end[1]})" 
-                            style="flex:1; background:#0e7490; color:white; border:none; padding:0.6rem; border-radius:6px; cursor:pointer;">
-                        <i class="fas fa-search-location"></i> Zoom to End
-                    </button>
-                </div>
-            `;
-            
-            modal.style.display = 'flex';
-        };
-
-        window.zoomToTransect = function(lat, lng) {
-            if (map) {
-                map.setView([lat, lng], 16);
-                closeModal();
-            }
-        };
-
-        window.closeModal = function() {
-            document.getElementById('transectModal').style.display = 'none';
-        };
-
-        window.closeSpeciesModal = function() {
-            document.getElementById('speciesDetailModal').style.display = 'none';
-        };
-
-        window.viewPhoto = function(photo) {
-            alert(`Opening photo: ${photo}\n(This would open the actual image in production)`);
-        };
-
-        window.downloadThesis = function(file) {
-            alert(`Downloading thesis: ${file}\n(This would download the actual PDF in production)`);
-        };
-
-        window.showSpeciesDetail = function(speciesCode) {
-            const modal = document.getElementById('speciesDetailModal');
-            
-            const species = speciesData.find(s => s.code === speciesCode);
-            if (!species) return;
-            
-            document.getElementById('selectedSpeciesName').textContent = species.fullName || species.subCategory;
-            
-            let totalCover = 0;
-            let transectCount = 0;
-            let deepCount = 0;
-            let shallowCount = 0;
-            const locations = new Set();
-            const assessments = new Set();
-            
-            allAssessments.forEach(a => {
-                a.transects.forEach(t => {
-                    const foundDeep = t.deep.species.find(s => s.code === speciesCode);
-                    if (foundDeep) {
-                        totalCover += foundDeep.cover;
-                        transectCount++;
-                        deepCount++;
-                        locations.add(`${a.barangay}, ${a.municipality} (Deep)`);
-                        assessments.add(a.id);
-                    }
-                    
-                    const foundShallow = t.shallow.species.find(s => s.code === speciesCode);
-                    if (foundShallow) {
-                        totalCover += foundShallow.cover;
-                        transectCount++;
-                        shallowCount++;
-                        locations.add(`${a.barangay}, ${a.municipality} (Shallow)`);
-                        assessments.add(a.id);
-                    }
-                });
-            });
-            
-            const avgCover = transectCount > 0 ? totalCover / transectCount : 0;
-            
-            document.getElementById('speciesTotalCount').textContent = avgCover.toFixed(1) + '%';
-            document.getElementById('speciesLocations').textContent = locations.size;
-            document.getElementById('speciesAssessments').textContent = transectCount;
-            
-            const locationList = document.getElementById('speciesLocationList');
-            let locationHtml = '';
-            Array.from(locations).slice(0, 10).forEach(loc => {
-                locationHtml += `<span class="species-badge-small">${loc}</span>`;
-            });
-            if (locations.size > 10) {
-                locationHtml += `<span class="species-badge-small">+${locations.size - 10} more</span>`;
-            }
-            locationList.innerHTML = locationHtml;
-            
-            const depthDist = document.getElementById('speciesDepthDistribution');
-            depthDist.innerHTML = `
-                <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px;">
-                    <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                        <div style="flex:1; text-align: center;">
-                            <span class="depth-badge depth-deep-badge">Deep</span>
-                            <div style="font-size: 1.2rem; font-weight: 700; color: #0e7490;">${deepCount}</div>
-                            <div style="font-size: 0.7rem;">occurrences</div>
-                        </div>
-                        <div style="flex:1; text-align: center;">
-                            <span class="depth-badge depth-shallow-badge">Shallow</span>
-                            <div style="font-size: 1.2rem; font-weight: 700; color: #0891b2;">${shallowCount}</div>
-                            <div style="font-size: 0.7rem;">occurrences</div>
-                        </div>
-                    </div>
-                    <p style="margin-top: 0.5rem; font-size: 0.8rem;">
-                        <strong>Expected coverage:</strong> Deep: ${species.deep}%, Shallow: ${species.shallow}%, Mean: ${species.mean}%
-                    </p>
-                    <div style="margin-top: 0.5rem;">
-                        <span class="species-badge-small">Major Category: ${species.majorCategory}</span>
-                    </div>
-                </div>
-            `;
-            
-            modal.style.display = 'flex';
-        };
-
-        function updateSpeciesSummary() {
-            const area = document.getElementById('speciesArea').value;
-            const speciesList = document.getElementById('speciesList');
-            const avgSpecies = document.getElementById('avgSpecies');
-            
-            const filteredAssessments = getFilteredAssessments();
-            const areaFiltered = area === 'all' 
-                ? filteredAssessments 
-                : filteredAssessments.filter(a => a.municipality === area);
-            
-            const speciesTotals = {};
-            const speciesTransectCount = {};
-            const speciesLocations = {};
-            
-            areaFiltered.forEach(a => {
-                a.transects.forEach(t => {
-                    t.deep.species.forEach(s => {
-                        if (!speciesTotals[s.code]) {
-                            speciesTotals[s.code] = 0;
-                            speciesTransectCount[s.code] = 0;
-                            speciesLocations[s.code] = new Set();
-                        }
-                        speciesTotals[s.code] += s.cover;
-                        speciesTransectCount[s.code] += 1;
-                        speciesLocations[s.code].add(`${a.barangay}, ${a.municipality}`);
-                    });
-                    
-                    t.shallow.species.forEach(s => {
-                        if (!speciesTotals[s.code]) {
-                            speciesTotals[s.code] = 0;
-                            speciesTransectCount[s.code] = 0;
-                            speciesLocations[s.code] = new Set();
-                        }
-                        speciesTotals[s.code] += s.cover;
-                        speciesTransectCount[s.code] += 1;
-                        speciesLocations[s.code].add(`${a.barangay}, ${a.municipality}`);
-                    });
-                });
-            });
-            
-            const speciesMeans = Object.entries(speciesTotals)
-                .map(([code, total]) => ({ 
-                    code, 
-                    meanCover: total / speciesTransectCount[code],
-                    locations: Array.from(speciesLocations[code]).slice(0, 3)
-                }))
-                .sort((a, b) => b.meanCover - a.meanCover);
-            
-            let html = '';
-            speciesMeans.forEach(s => {
-                const species = speciesData.find(sp => sp.code === s.code);
-                const fullName = species ? species.subCategory : s.code;
-                const locationText = s.locations.join(', ');
-                
-                html += `
-                    <div class="species-item ${currentSpeciesFilter === s.code ? 'active' : ''}" 
-                         data-species="${s.code}"
-                         onclick="filterMapBySpecies('${s.code}')">
-                        <div>
-                            <span class="species-code">${s.code}</span>
-                            <span class="species-fullname">${fullName}</span>
-                            <div class="species-locations">
-                                <i class="fas fa-map-marker-alt" style="font-size: 0.55rem; margin-right: 0.2rem;"></i>
-                                ${locationText}${s.locations.length < speciesLocations[s.code].size ? '...' : ''}
-                            </div>
-                        </div>
-                        <span class="species-coverage">${s.meanCover.toFixed(1)}%</span>
-                    </div>
-                `;
-            });
-            
-            speciesList.innerHTML = html || '<div class="empty-state">No species data available</div>';
-            
-            const barangaySpeciesCount = {};
-            areaFiltered.forEach(a => {
-                const key = `${a.municipality}-${a.barangay}`;
-                if (!barangaySpeciesCount[key]) {
-                    barangaySpeciesCount[key] = new Set();
-                }
-                a.transects.forEach(t => {
-                    t.deep.species.forEach(s => barangaySpeciesCount[key].add(s.code));
-                    t.shallow.species.forEach(s => barangaySpeciesCount[key].add(s.code));
-                });
-            });
-            
-            const avgPerBarangay = Object.keys(barangaySpeciesCount).length > 0 
-                ? (Object.values(barangaySpeciesCount).reduce((sum, set) => sum + set.size, 0) / Object.keys(barangaySpeciesCount).length).toFixed(1)
-                : '0';
-            
-            avgSpecies.textContent = avgPerBarangay;
+            document.getElementById('fullAssessmentModal').style.display = 'flex';
         }
 
-        window.onclick = function(event) {
-            const modal = document.getElementById('transectModal');
-            const speciesModal = document.getElementById('speciesDetailModal');
-            if (event.target === modal) {
-                closeModal();
-            }
-            if (event.target === speciesModal) {
-                closeSpeciesModal();
-            }
-        };
-    </script>
+        function closeFullAssessmentModal() {
+            document.getElementById('fullAssessmentModal').style.display = 'none';
+        }
+        
+        function closeSpeciesModal() {
+            document.getElementById('speciesDetailModal').style.display = 'none';
+        }
 
+        function clearSiteFilter() {
+            currentSiteFilter = null;
+            closeAssessmentDetails();
+            updateTrendChart();
+            updateStatistics();
+        }
+
+        function updateStatistics() {
+            const filtered = getFilteredAssessments();
+            document.getElementById('totalAssessments').textContent = filtered.length;
+            let totalTransects = 0;
+            filtered.forEach(assessment => { totalTransects += assessment.transects.length; });
+            document.getElementById('totalTransects').textContent = totalTransects;
+            if (filtered.length > 0) {
+                const avgCover = (filtered.reduce((sum, a) => sum + a.coralCover, 0) / filtered.length).toFixed(1);
+                document.getElementById('avgCoverage').textContent = avgCover + '%';
+            } else {
+                document.getElementById('avgCoverage').textContent = '0%';
+            }
+            const uniqueSpecies = new Set();
+            filtered.forEach(a => { a.species.forEach(s => uniqueSpecies.add(s.code)); });
+            document.getElementById('totalSpecies').textContent = uniqueSpecies.size;
+            const excellent = filtered.filter(a => a.coralCover >= 65).length;
+            const good = filtered.filter(a => a.coralCover >= 45 && a.coralCover < 65).length;
+            const fair = filtered.filter(a => a.coralCover >= 25 && a.coralCover < 45).length;
+            const poor = filtered.filter(a => a.coralCover < 25).length;
+            document.getElementById('excellentCount').textContent = excellent;
+            document.getElementById('goodCount').textContent = good;
+            document.getElementById('fairCount').textContent = fair;
+            document.getElementById('poorCount').textContent = poor;
+            updateSampleSites();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            allAssessments = generateAssessmentsFromCoordinates();
+            updateStatistics();
+            initializeMap();
+            initializeCharts();
+
+            document.getElementById('yearFrom').addEventListener('change', function() { filterMarkers(); updateStatistics(); updateTrendChart(); });
+            document.getElementById('yearTo').addEventListener('change', function() { filterMarkers(); updateStatistics(); updateTrendChart(); });
+            document.getElementById('municipalityFilter').addEventListener('change', function() { filterMarkers(); updateStatistics(); updateTrendChart(); });
+            document.getElementById('healthFilter').addEventListener('change', function() { filterMarkers(); updateStatistics(); updateTrendChart(); });
+        });
+
+        function filterMarkers() {
+            const filtered = getFilteredAssessments();
+            addMarkersToCluster(filtered);
+            updateFilterIndicator();
+        }
+
+        function filterMapBySpecies(speciesCode) {
+            currentSpeciesFilter = speciesCode;
+            currentSiteFilter = null;
+            const species = speciesData.find(s => s.code === speciesCode);
+            if (species) {
+                document.getElementById('filterSpeciesName').textContent = `Showing sites with ${species.code}`;
+                document.getElementById('activeFilterSpecies').textContent = species.code;
+                document.getElementById('speciesFilterIndicator').style.display = 'flex';
+                document.getElementById('mapFilterIndicator').classList.add('show');
+            }
+            filterMarkers();
+            updateStatistics();
+            updateTrendChart();
+            closeAssessmentDetails();
+        }
+
+        function clearSpeciesFilter() {
+            currentSpeciesFilter = null;
+            document.getElementById('speciesFilterIndicator').style.display = 'none';
+            document.getElementById('mapFilterIndicator').classList.remove('show');
+            filterMarkers();
+            updateStatistics();
+            updateTrendChart();
+        }
+
+        function updateFilterIndicator() {
+            const indicator = document.getElementById('mapFilterIndicator');
+            if (currentSpeciesFilter) indicator.classList.add('show');
+            else indicator.classList.remove('show');
+        }
+
+        function initializeMap() {
+            try {
+                map = L.map('map').setView([6.0, 124.9], 9);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors', maxZoom: 18 }).addTo(map);
+
+                // SPYDER REMOVED - spiderfyOnMaxZoom set to false
+                markerCluster = L.markerClusterGroup({
+                    iconCreateFunction: function(cluster) {
+                        const markers = cluster.getAllChildMarkers();
+                        const count = markers.length;
+                        let clusterClass = 'marker-cluster-small';
+                        if (count >= 6 && count <= 15) clusterClass = 'marker-cluster-medium';
+                        else if (count >= 16) clusterClass = 'marker-cluster-large';
+                        return L.divIcon({ html: '<div><span>' + count + '</span></div>', className: 'marker-cluster ' + clusterClass, iconSize: [40, 40] });
+                    },
+                    maxClusterRadius: 50,
+                    spiderfyOnMaxZoom: false,
+                    spiderLegPolylineCount: 0,
+                    showCoverageOnHover: true,
+                    zoomToBoundsOnClick: true
+                });
+
+                addMarkersToCluster(allAssessments);
+                map.addLayer(markerCluster);
+            } catch (error) {
+                console.error('Error initializing map:', error);
+                document.getElementById('map').innerHTML = '<div style="padding: 2rem; text-align: center; color: red;">Error loading map. Please refresh.</div>';
+            }
+        }
+
+        function addMarkersToCluster(assessments) {
+            markerCluster.clearLayers();
+            
+            // Use a Map to store unique barangay markers
+            const uniqueBarangays = new Map();
+            assessments.forEach(assessment => {
+                if (!uniqueBarangays.has(assessment.barangay)) {
+                    uniqueBarangays.set(assessment.barangay, {
+                        name: assessment.barangay,
+                        municipality: assessment.municipality,
+                        coords: assessment.coordinates,
+                        cover: assessment.coralCover,
+                        healthClass: assessment.healthClass
+                    });
+                }
+            });
+
+            uniqueBarangays.forEach((info, name) => {
+                let color;
+                if (info.cover >= 65) color = '#2e7d32';
+                else if (info.cover >= 45) color = '#4caf50';
+                else if (info.cover >= 25) color = '#ffb74d';
+                else color = '#f44336';
+                
+                let badgeClass = '';
+                if (info.cover >= 65) badgeClass = 'badge-excellent';
+                else if (info.cover >= 45) badgeClass = 'badge-good';
+                else if (info.cover >= 25) badgeClass = 'badge-fair';
+                else badgeClass = 'badge-poor';
+                
+                const marker = L.circleMarker(info.coords, {
+                    radius: 10,
+                    fillColor: color,
+                    color: 'white',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.85
+                });
+                
+                // DIRECT CLICK HANDLER on marker
+                marker.on('click', function(e) {
+                    L.DomEvent.stopPropagation(e);
+                    selectBarangay(name);
+                });
+                
+                marker.bindPopup(`
+                    <div style="font-family: 'Poppins', sans-serif; min-width: 200px;">
+                        <h3 style="margin:0 0 5px; color:#0c4a6e; font-size:14px;">${name} Barangay</h3>
+                        <p style="margin:0; font-size:12px;"><strong>${info.municipality}</strong></p>
+                        <p style="margin:5px 0 0; font-size:12px;">🐚 Latest cover: <strong>${info.cover}%</strong></p>
+                        <p style="margin:5px 0 0; font-size:11px; color:#64748b;"><i class="fas fa-info-circle"></i> Click anywhere on marker to view details</p>
+                    </div>
+                `);
+                
+                markerCluster.addLayer(marker);
+            });
+        }
+
+        function initializeCharts() {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: { labels: [2020,2021,2022,2023,2024,2025,2026], datasets: [{ label: 'Average Coral Cover %', data: [null,null,null,null,null,null,null], borderColor: '#0284c7', backgroundColor: 'rgba(2,132,199,0.1)', tension: 0.4, fill: true, pointBackgroundColor: '#0284c7', pointBorderColor: 'white', pointBorderWidth: 2, pointRadius: 6 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 100 } } }
+            });
+            updateTrendChart();
+        }
+
+        window.showTransectDetailsModal = showTransectDetailsModal;
+        window.closeTransectDetailsModal = closeTransectDetailsModal;
+        window.zoomToTransectLocation = zoomToTransectLocation;
+        window.toggleDropdown = toggleDropdown;
+        window.viewPhoto = function(photo) { alert(`Opening photo: ${photo}`); };
+        window.downloadThesis = function(file) { alert(`Downloading thesis: ${file}`); };
+
+        window.onclick = function(event) {
+            const transectModal = document.getElementById('transectDetailsModal');
+            const fullModal = document.getElementById('fullAssessmentModal');
+            const speciesModal = document.getElementById('speciesDetailModal');
+            if (event.target === transectModal) closeTransectDetailsModal();
+            if (event.target === fullModal) closeFullAssessmentModal();
+            if (event.target === speciesModal) closeSpeciesModal();
+        };
+        
+        window.selectBarangay = selectBarangay;
+        window.clearSiteFilter = clearSiteFilter;
+        window.showFullAssessmentDetails = showFullAssessmentDetails;
+        window.closeFullAssessmentModal = closeFullAssessmentModal;
+        window.filterMapBySpecies = filterMapBySpecies;
+        window.clearSpeciesFilter = clearSpeciesFilter;
+        window.closeSpeciesModal = closeSpeciesModal;
+    </script>
 </body>
 </html>
