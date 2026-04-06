@@ -200,6 +200,24 @@
             background: #f59e0b;
         }
 
+        .toggle-transects-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .toggle-transects-btn:hover {
+            background: #059669;
+        }
+
         #map {
             flex: 1;
             width: 100%;
@@ -1218,6 +1236,9 @@
                 <button id="mapViewFilterBtn" class="map-view-filter-btn">
                     <i class="fas fa-crosshairs"></i> Filter by Map View
                 </button>
+                <button id="toggleTransectsBtn" class="toggle-transects-btn">
+                    <i class="fas fa-draw-polygon"></i> Show Transects
+                </button>
             </div>
             <div id="map"></div>
             
@@ -1340,6 +1361,8 @@
         let lastOpenedAssessmentId = null;
         let mapViewFilterActive = false;
         let currentBarangayAssessments = [];
+        let transectLayerGroup = null;
+        let showTransects = false;
 
         // Sample contributors data
         const contributorsList = [
@@ -1363,7 +1386,7 @@
             { name: "Christine Lopez", role: "Research Assistant", email: "clopez@msugensan.edu.ph", institution: "MSU-Gensan" }
         ];
 
-        // Your provided coordinates
+        // Your provided coordinates for all municipalities
         const maitumBarangays = [
             {name: "Kalaong", coords: [6.087594280200079, 124.46806928182298]},
             {name: "Kiambing", coords: [6.034835809422468, 124.51702263223599]},
@@ -1401,6 +1424,51 @@
             {name: "Malbang", coords: [5.859841856779651, 125.0305110959085]},
             {name: "Pananag", coords: [5.922782421920739, 124.86764006297673]},
             {name: "Poblacion", coords: [5.864218934329429, 124.99018210609333]},
+        ];
+
+        // UPDATED: Your provided GeoJSON transects for General Santos - Now drawing RECTANGLES
+        // Each transect pair (Shallow + Deep) forms a rectangle
+        const gensanTransectRectangles = [
+            // Baluan T1 Rectangle (Shallow + Deep)
+            { name: "Baluan T1", barangay: "Baluan", shallow: [[125.214442,6.094215],[125.2147,6.094]], deep: [[125.21441,6.094255],[125.2143,6.09452]] },
+            // Baluan T2 Rectangle
+            { name: "Baluan T2", barangay: "Baluan", shallow: [[125.21439,6.09412],[125.21468,6.0939]], deep: [[125.21436,6.09417],[125.2141,6.09445]] },
+            // Bula T1 Rectangle
+            { name: "Bula T1", barangay: "Bula", shallow: [[125.196863,6.097449],[125.1971,6.09724]], deep: [[125.196831,6.097491],[125.19672,6.09776]] },
+            // Bula T2 Rectangle
+            { name: "Bula T2", barangay: "Bula", shallow: [[125.19681,6.09732],[125.19708,6.09709]], deep: [[125.196773,6.097365],[125.1965,6.0977]] },
+            // Buayan T1 Rectangle
+            { name: "Buayan T1", barangay: "Buayan", shallow: [[125.227286,6.093856],[125.22754,6.09362]], deep: [[125.22725,6.0939],[125.22712,6.0942]] },
+            // Buayan T2 Rectangle
+            { name: "Buayan T2", barangay: "Buayan", shallow: [[125.22723,6.09376],[125.22752,6.0935]], deep: [[125.22719,6.09381],[125.22695,6.09412]] },
+            // Calumpang T1 Rectangle
+            { name: "Calumpang T1", barangay: "Calumpang", shallow: [[125.158824,6.071797],[125.15905,6.07155]], deep: [[125.15879,6.07184],[125.15865,6.07212]] },
+            // Calumpang T2 Rectangle
+            { name: "Calumpang T2", barangay: "Calumpang", shallow: [[125.15876,6.0717],[125.15902,6.07145]], deep: [[125.15872,6.07175],[125.1585,6.07205]] },
+            // Calumpang T3 Rectangle
+            { name: "Calumpang T3", barangay: "Calumpang", shallow: [[125.15868,6.07188],[125.1583,6.07215]], deep: [[125.15865,6.07192],[125.1582,6.07225]] },
+            // Dadiangas South T1 Rectangle
+            { name: "Dadiangas South T1", barangay: "Dadiangas South", shallow: [[125.1739387,6.1054706],[125.1735503,6.1056827]], deep: [[125.1732,6.10603],[125.1735274,6.1056919]] },
+            // Dadiangas South T2 Rectangle
+            { name: "Dadiangas South T2", barangay: "Dadiangas South", shallow: [[125.1738935,6.1054033],[125.1734969,6.1056213]], deep: [[125.17314,6.10594],[125.1734696,6.1056436]] },
+            // Dadiangas West T1 Rectangle
+            { name: "Dadiangas West T1", barangay: "Dadiangas West", shallow: [[125.168781,6.104004],[125.16902,6.10377]], deep: [[125.16875,6.10405],[125.1686,6.1043]] },
+            // Dadiangas West T2 Rectangle
+            { name: "Dadiangas West T2", barangay: "Dadiangas West", shallow: [[125.16872,6.10391],[125.16898,6.10367]], deep: [[125.16869,6.10396],[125.16845,6.10425]] },
+            // Labangal T1 Rectangle
+            { name: "Labangal T1", barangay: "Labangal", shallow: [[125.164248,6.095408],[125.1645,6.09516]], deep: [[125.16421,6.09545],[125.16405,6.09572]] },
+            // Labangal T2 Rectangle
+            { name: "Labangal T2", barangay: "Labangal", shallow: [[125.16418,6.09531],[125.16445,6.09507]], deep: [[125.16414,6.09536],[125.1639,6.09565]] },
+            // Siguel T1 Rectangle
+            { name: "Siguel T1", barangay: "Siguel", shallow: [[125.119,5.970608],[125.11925,5.97036]], deep: [[125.11896,5.97065],[125.1188,5.97092]] },
+            // Siguel T2 Rectangle
+            { name: "Siguel T2", barangay: "Siguel", shallow: [[125.11894,5.97051],[125.11922,5.97027]], deep: [[125.1189,5.97056],[125.11865,5.97085]] },
+            // Tambler T1 Rectangle
+            { name: "Tambler T1", barangay: "Tambler", shallow: [[125.141306,6.012968],[125.14156,6.01272]], deep: [[125.14127,6.01301],[125.14112,6.01328]] },
+            // Tambler T2 Rectangle
+            { name: "Tambler T2", barangay: "Tambler", shallow: [[125.14124,6.01287],[125.14152,6.01262]], deep: [[125.1412,6.01292],[125.14095,6.0132]] },
+            // Tambler T3 Rectangle
+            { name: "Tambler T3", barangay: "Tambler", shallow: [[125.1414296,6.0125705],[125.1410655,6.012822]], deep: [[125.1410261,6.0128566],[125.1407872,6.0132228]] }
         ];
 
         const gensanBarangays = [
@@ -1572,7 +1640,7 @@
                                 healthCategory = { name: 'excellent', range: adjustedRange, color: '#2e7d32' };
                             } else if (barangay.name === 'Katubao' || barangay.name === 'Kling' || barangay.name === 'Lumasal') {
                                 healthCategory = healthCategories[1];
-                            } else if (barangay.name === 'Poblacion' || barangay.name === 'Baluan' || barangay.name === 'Lun Padidu') {
+                            } else if (barangay.name === 'Poblacion' || barangay.name === 'Baluan' || barangay.name === 'Lun Padidu' || barangay.name === 'Bula' || barangay.name === 'Calumpang') {
                                 let recovery = (year - 2020) * 0.8;
                                 let baseRange = [10, 24];
                                 adjustedRange = [
@@ -1722,7 +1790,7 @@
             createAssessmentsForMunicipality('Glan', glanBarangays, 3);
             createAssessmentsForMunicipality('Alabel', alabelBarangays, 4);
             createAssessmentsForMunicipality('Malapatan', malapatanBarangays, 3);
-            createAssessmentsForMunicipality('General Santos', gensanBarangays, 3);
+            createAssessmentsForMunicipality('General Santos', gensanBarangays, 4);
 
             return assessments;
         }
@@ -1812,12 +1880,6 @@
                 });
             }
 
-            if (currentSiteFilter) {
-                filtered = filtered.filter(assessment => {
-                    return assessment.location === currentSiteFilter || assessment.barangay === currentSiteFilter;
-                });
-            }
-
             if (mapViewFilterActive && map) {
                 const bounds = map.getBounds();
                 filtered = filtered.filter(assessment => {
@@ -1830,7 +1892,6 @@
             return filtered;
         }
 
-        // Helper function to get the latest assessment for a barangay within filtered assessments
         function getLatestAssessmentForBarangay(filteredAssessments, barangayName) {
             const barangayAssessments = filteredAssessments.filter(a => a.barangay === barangayName);
             if (barangayAssessments.length === 0) return null;
@@ -2052,6 +2113,115 @@
                 poorHtml += `<span class="site-tag ${healthClass}" onclick="selectBarangay('${site.barangay}')">${site.name} (${site.cover}%)</span>`;
             });
             poorContainer.innerHTML = poorHtml;
+        }
+
+        // ============================================
+        // UPDATED: DISPLAY RECTANGLES (connecting Shallow + Deep transects)
+        // ============================================
+        function displayTransectLines() {
+            // Remove existing transect layer if any
+            if (transectLayerGroup) {
+                map.removeLayer(transectLayerGroup);
+            }
+            
+            if (!showTransects) return;
+            
+            transectLayerGroup = L.layerGroup();
+            
+            // Loop through each rectangle definition
+            gensanTransectRectangles.forEach(rect => {
+                // Get the four corners of the rectangle:
+                // p1 = shallow start, p2 = shallow end, p3 = deep end, p4 = deep start
+                const shallowStart = rect.shallow[0];
+                const shallowEnd = rect.shallow[1];
+                const deepStart = rect.deep[0];
+                const deepEnd = rect.deep[1];
+                
+                // Create rectangle polygon coordinates (closed loop)
+                const rectangleCoords = [
+                    [shallowStart[1], shallowStart[0]],  // shallow start (lat, lng)
+                    [shallowEnd[1], shallowEnd[0]],      // shallow end
+                    [deepEnd[1], deepEnd[0]],            // deep end
+                    [deepStart[1], deepStart[0]],        // deep start
+                    [shallowStart[1], shallowStart[0]]   // back to start to close
+                ];
+                
+                // Find latest assessment for this barangay to get coral cover color
+                let latestAssessment = allAssessments
+                    .filter(a => a.barangay === rect.barangay && a.municipality === 'General Santos')
+                    .sort((a, b) => new Date(b.assessmentDate) - new Date(a.assessmentDate))[0];
+                
+                let cover = latestAssessment ? latestAssessment.coralCover : 50;
+                let color = cover >= 65 ? '#2e7d32' : cover >= 45 ? '#4caf50' : cover >= 25 ? '#ffb74d' : '#f44336';
+                let fillColor = color + '40'; // Add transparency for fill
+                
+                // Create polygon (rectangle)
+                const rectangle = L.polygon(rectangleCoords, {
+                    color: color,
+                    weight: 3,
+                    opacity: 0.9,
+                    fillColor: fillColor,
+                    fillOpacity: 0.3,
+                    smoothFactor: 1
+                });
+                
+                // Add popup with transect information
+                rectangle.bindPopup(`
+                    <div style="font-family: 'Poppins', sans-serif; min-width: 200px;">
+                        <strong>${rect.name}</strong><br>
+                        <span style="color: ${color};">■</span> Coral Cover: <strong>${cover}%</strong><br>
+                        <small>Barangay: ${rect.barangay}</small><br>
+                        <small>📏 Rectangle shows Shallow + Deep transect area</small>
+                    </div>
+                `);
+                
+                transectLayerGroup.addLayer(rectangle);
+            });
+            
+            transectLayerGroup.addTo(map);
+            console.log(`Displayed ${gensanTransectRectangles.length} transect rectangles on the map`);
+        }
+        
+        function toggleTransects() {
+            showTransects = !showTransects;
+            const btn = document.getElementById('toggleTransectsBtn');
+            if (showTransects) {
+                btn.innerHTML = '<i class="fas fa-eye-slash"></i> Hide Transects';
+                btn.style.background = '#ef4444';
+                displayTransectLines();
+                const toast = document.createElement('div');
+                toast.style.position = 'fixed';
+                toast.style.bottom = '20px';
+                toast.style.left = '20px';
+                toast.style.background = '#10b981';
+                toast.style.color = 'white';
+                toast.style.padding = '8px 16px';
+                toast.style.borderRadius = '8px';
+                toast.style.zIndex = '10000';
+                toast.style.fontSize = '12px';
+                toast.innerHTML = '<i class="fas fa-draw-polygon"></i> Transect rectangles visible for General Santos';
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3000);
+            } else {
+                btn.innerHTML = '<i class="fas fa-draw-polygon"></i> Show Transects';
+                btn.style.background = '#10b981';
+                if (transectLayerGroup) {
+                    map.removeLayer(transectLayerGroup);
+                }
+                const toast = document.createElement('div');
+                toast.style.position = 'fixed';
+                toast.style.bottom = '20px';
+                toast.style.left = '20px';
+                toast.style.background = '#64748b';
+                toast.style.color = 'white';
+                toast.style.padding = '8px 16px';
+                toast.style.borderRadius = '8px';
+                toast.style.zIndex = '10000';
+                toast.style.fontSize = '12px';
+                toast.innerHTML = '<i class="fas fa-draw-polygon"></i> Transect rectangles hidden';
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3000);
+            }
         }
 
         function toggleMapViewFilter() {
@@ -2296,7 +2466,6 @@
             currentBarangayAssessments = allAssessments.filter(a => a.barangay === barangayName);
             if (currentBarangayAssessments.length === 0) return;
             
-            currentSiteFilter = barangayName;
             const municipality = currentBarangayAssessments[0].municipality;
             const latest = currentBarangayAssessments.sort((a, b) => new Date(b.assessmentDate) - new Date(a.assessmentDate))[0];
             const avgCover = (currentBarangayAssessments.reduce((s, a) => s + a.coralCover, 0) / currentBarangayAssessments.length).toFixed(1);
@@ -2572,12 +2741,17 @@
             document.getElementById('municipalityFilter').addEventListener('change', function() { filterMarkers(); updateStatisticsFromMapView(); updateTrendChart(); });
             document.getElementById('healthFilter').addEventListener('change', function() { filterMarkers(); updateStatisticsFromMapView(); updateTrendChart(); });
             document.getElementById('mapViewFilterBtn').addEventListener('click', toggleMapViewFilter);
+            document.getElementById('toggleTransectsBtn').addEventListener('click', toggleTransects);
         });
 
         function filterMarkers() {
             const filtered = getFilteredAssessments();
             addMarkersToCluster(filtered);
             updateFilterIndicator();
+            // Refresh transects if they are visible
+            if (showTransects) {
+                displayTransectLines();
+            }
         }
 
         function filterMapBySpecies(speciesCode) {
@@ -2586,8 +2760,6 @@
             const species = speciesData.find(s => s.code === speciesCode);
             if (species) {
                 document.getElementById('filterSpeciesName').textContent = `Showing sites with ${species.code}`;
-                document.getElementById('activeFilterSpecies').textContent = species.code;
-                document.getElementById('speciesFilterIndicator').style.display = 'flex';
                 document.getElementById('mapFilterIndicator').classList.add('show');
             }
             filterMarkers();
@@ -2598,7 +2770,6 @@
 
         function clearSpeciesFilter() {
             currentSpeciesFilter = null;
-            document.getElementById('speciesFilterIndicator').style.display = 'none';
             document.getElementById('mapFilterIndicator').classList.remove('show');
             filterMarkers();
             updateStatisticsFromMapView();
@@ -2649,6 +2820,7 @@
 
                 addMarkersToCluster(allAssessments);
                 map.addLayer(markerCluster);
+                
             } catch (error) {
                 console.error('Error initializing map:', error);
                 document.getElementById('map').innerHTML = '<div style="padding: 2rem; text-align: center; color: red;">Error loading map. Please refresh.</div>';
@@ -2658,7 +2830,6 @@
         function addMarkersToCluster(assessments) {
             markerCluster.clearLayers();
             
-            // Calculate assessment count per barangay based on filtered assessments
             const barangayAssessmentCount = {};
             assessments.forEach(assessment => {
                 if (!barangayAssessmentCount[assessment.barangay]) {
@@ -2670,7 +2841,6 @@
             const uniqueBarangays = new Map();
             assessments.forEach(assessment => {
                 if (!uniqueBarangays.has(assessment.barangay)) {
-                    // Get the latest assessment for this barangay WITHIN the current filter
                     const latestAssessment = getLatestAssessmentForBarangay(assessments, assessment.barangay);
                     uniqueBarangays.set(assessment.barangay, {
                         name: assessment.barangay,
@@ -2685,16 +2855,15 @@
             });
 
             uniqueBarangays.forEach((info, name) => {
-                // CORRECT COLOR CODING BASED ON THE LATEST ASSESSMENT WITHIN THE FILTER
                 let color;
                 if (info.cover >= 65) {
-                    color = '#2e7d32';  // Excellent - dark green
+                    color = '#2e7d32';
                 } else if (info.cover >= 45) {
-                    color = '#4caf50';  // Good - light green
+                    color = '#4caf50';
                 } else if (info.cover >= 25) {
-                    color = '#ffb74d';  // Fair - orange
+                    color = '#ffb74d';
                 } else {
-                    color = '#f44336';  // Poor - red
+                    color = '#f44336';
                 }
                 
                 const markerHtml = `
@@ -2719,7 +2888,6 @@
                     selectBarangay(name);
                 });
                 
-                // Show the latest cover info in popup based on filtered data
                 let dateText = info.latestDate ? ` (${info.latestDate})` : '';
                 markerObj.bindPopup(`
                     <div style="font-family: 'Poppins', sans-serif; min-width: 200px;">
