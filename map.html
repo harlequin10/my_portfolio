@@ -1426,48 +1426,27 @@
             {name: "Poblacion", coords: [5.864218934329429, 124.99018210609333]},
         ];
 
-        // UPDATED: Your provided GeoJSON transects for General Santos - Now drawing RECTANGLES
-        // Each transect pair (Shallow + Deep) forms a rectangle
+        // UPDATED: Transect rectangles for General Santos - FULLY COLORED
         const gensanTransectRectangles = [
-            // Baluan T1 Rectangle (Shallow + Deep)
             { name: "Baluan T1", barangay: "Baluan", shallow: [[125.214442,6.094215],[125.2147,6.094]], deep: [[125.21441,6.094255],[125.2143,6.09452]] },
-            // Baluan T2 Rectangle
             { name: "Baluan T2", barangay: "Baluan", shallow: [[125.21439,6.09412],[125.21468,6.0939]], deep: [[125.21436,6.09417],[125.2141,6.09445]] },
-            // Bula T1 Rectangle
             { name: "Bula T1", barangay: "Bula", shallow: [[125.196863,6.097449],[125.1971,6.09724]], deep: [[125.196831,6.097491],[125.19672,6.09776]] },
-            // Bula T2 Rectangle
             { name: "Bula T2", barangay: "Bula", shallow: [[125.19681,6.09732],[125.19708,6.09709]], deep: [[125.196773,6.097365],[125.1965,6.0977]] },
-            // Buayan T1 Rectangle
             { name: "Buayan T1", barangay: "Buayan", shallow: [[125.227286,6.093856],[125.22754,6.09362]], deep: [[125.22725,6.0939],[125.22712,6.0942]] },
-            // Buayan T2 Rectangle
             { name: "Buayan T2", barangay: "Buayan", shallow: [[125.22723,6.09376],[125.22752,6.0935]], deep: [[125.22719,6.09381],[125.22695,6.09412]] },
-            // Calumpang T1 Rectangle
             { name: "Calumpang T1", barangay: "Calumpang", shallow: [[125.158824,6.071797],[125.15905,6.07155]], deep: [[125.15879,6.07184],[125.15865,6.07212]] },
-            // Calumpang T2 Rectangle
             { name: "Calumpang T2", barangay: "Calumpang", shallow: [[125.15876,6.0717],[125.15902,6.07145]], deep: [[125.15872,6.07175],[125.1585,6.07205]] },
-            // Calumpang T3 Rectangle
             { name: "Calumpang T3", barangay: "Calumpang", shallow: [[125.15868,6.07188],[125.1583,6.07215]], deep: [[125.15865,6.07192],[125.1582,6.07225]] },
-            // Dadiangas South T1 Rectangle
             { name: "Dadiangas South T1", barangay: "Dadiangas South", shallow: [[125.1739387,6.1054706],[125.1735503,6.1056827]], deep: [[125.1732,6.10603],[125.1735274,6.1056919]] },
-            // Dadiangas South T2 Rectangle
             { name: "Dadiangas South T2", barangay: "Dadiangas South", shallow: [[125.1738935,6.1054033],[125.1734969,6.1056213]], deep: [[125.17314,6.10594],[125.1734696,6.1056436]] },
-            // Dadiangas West T1 Rectangle
             { name: "Dadiangas West T1", barangay: "Dadiangas West", shallow: [[125.168781,6.104004],[125.16902,6.10377]], deep: [[125.16875,6.10405],[125.1686,6.1043]] },
-            // Dadiangas West T2 Rectangle
             { name: "Dadiangas West T2", barangay: "Dadiangas West", shallow: [[125.16872,6.10391],[125.16898,6.10367]], deep: [[125.16869,6.10396],[125.16845,6.10425]] },
-            // Labangal T1 Rectangle
             { name: "Labangal T1", barangay: "Labangal", shallow: [[125.164248,6.095408],[125.1645,6.09516]], deep: [[125.16421,6.09545],[125.16405,6.09572]] },
-            // Labangal T2 Rectangle
             { name: "Labangal T2", barangay: "Labangal", shallow: [[125.16418,6.09531],[125.16445,6.09507]], deep: [[125.16414,6.09536],[125.1639,6.09565]] },
-            // Siguel T1 Rectangle
             { name: "Siguel T1", barangay: "Siguel", shallow: [[125.119,5.970608],[125.11925,5.97036]], deep: [[125.11896,5.97065],[125.1188,5.97092]] },
-            // Siguel T2 Rectangle
             { name: "Siguel T2", barangay: "Siguel", shallow: [[125.11894,5.97051],[125.11922,5.97027]], deep: [[125.1189,5.97056],[125.11865,5.97085]] },
-            // Tambler T1 Rectangle
             { name: "Tambler T1", barangay: "Tambler", shallow: [[125.141306,6.012968],[125.14156,6.01272]], deep: [[125.14127,6.01301],[125.14112,6.01328]] },
-            // Tambler T2 Rectangle
             { name: "Tambler T2", barangay: "Tambler", shallow: [[125.14124,6.01287],[125.14152,6.01262]], deep: [[125.1412,6.01292],[125.14095,6.0132]] },
-            // Tambler T3 Rectangle
             { name: "Tambler T3", barangay: "Tambler", shallow: [[125.1414296,6.0125705],[125.1410655,6.012822]], deep: [[125.1410261,6.0128566],[125.1407872,6.0132228]] }
         ];
 
@@ -1527,25 +1506,7 @@
             { code: "EUP", fullName: "EUPHYLLIA (EUP)", subCategory: "EUPHYLLIA (EUP)", majorCategory: "EUPHYLLIDAE", deep: 1.29, shallow: 0.08, mean: 0.69 },
             { code: "PLAT", fullName: "PLATYGYRA (PLAT)", subCategory: "PLATYGYRA (PLAT)", majorCategory: "FAVIIDAE", deep: 0.37, shallow: 0.46, mean: 0.41 },
             { code: "HEL", fullName: "HELIOPORA (HEL)", subCategory: "HELIOPORA (HEL)", majorCategory: "NON-SCLERACTINIAN CORALS", deep: 0.92, shallow: 0.15, mean: 0.54 },
-            { code: "CMR", fullName: "FUNGIA (CMR)", subCategory: "FUNGIA (CMR)", majorCategory: "FUNGIIDAE", deep: 1.11, shallow: 0.23, mean: 0.67 },
-            { code: "SYM", fullName: "SYMPHYLLIA (SYM)", subCategory: "SYMPHYLLIA (SYM)", majorCategory: "MUSSIDAE", deep: 0.18, shallow: 0.31, mean: 0.25 },
-            { code: "FOT", fullName: "OTHER FREE LIVING FUNGIIDS (FOT)", subCategory: "OTHER FREE LIVING FUNGIIDS (FOT)", majorCategory: "FUNGIIDAE", deep: 0.37, shallow: 0.38, mean: 0.38 },
-            { code: "CM", fullName: "OTHER MASSIVE CORALS (CM)", subCategory: "OTHER MASSIVE CORALS (CM)", majorCategory: "OTHER CORALS WITH NO SPECIFIC GENUS", deep: 0.18, shallow: 0.23, mean: 0.21 },
-            { code: "COS", fullName: "COSCINAREA (COS)", subCategory: "COSCINAREA (COS)", majorCategory: "SIDERASTTREIDAE", deep: 0, shallow: 0.54, mean: 0.27 },
-            { code: "COE", fullName: "COELOSERIS (COE)", subCategory: "COELOSERIS (COE)", majorCategory: "AGARICIIDAE", deep: 0, shallow: 0.38, mean: 0.19 },
-            { code: "ACD", fullName: "ACROPORA DIGITATE (ACD)", subCategory: "ACROPORA DIGITATE (ACD)", majorCategory: "ACROPORIDAE", deep: 0, shallow: 0.08, mean: 0.04 },
-            { code: "MONTB", fullName: "MONTIPORA BRANCHING (MONTB)", subCategory: "MONTIPORA BRANCHING (MONTB)", majorCategory: "ACROPORIDAE", deep: 0, shallow: 0.15, mean: 0.08 },
-            { code: "MONTF", fullName: "MONTIPORA FOLIOSE (MONTF)", subCategory: "MONTIPORA FOLIOSE (MONTF)", majorCategory: "ACROPORIDAE", deep: 0, shallow: 0.31, mean: 0.15 },
-            { code: "PACF", fullName: "PACHYSERIS FOLIOSE (PACF)", subCategory: "PACHYSERIS FOLIOSE (PACF)", majorCategory: "AGARICIIDAE", deep: 0.18, shallow: 0, mean: 0.09 },
-            { code: "FVI", fullName: "FAVITES (FVI)", subCategory: "FAVITES (FVI)", majorCategory: "FAVIIDAE", deep: 0.37, shallow: 0.08, mean: 0.22 },
-            { code: "GONIA", fullName: "GONIASTREA (GONIA)", subCategory: "GONIASTREA (GONIA)", majorCategory: "FAVIIDAE", deep: 0.18, shallow: 0, mean: 0.09 },
-            { code: "MON", fullName: "MONTASTREA (MON)", subCategory: "MONTASTREA (MON)", majorCategory: "FAVIIDAE", deep: 0, shallow: 0.08, mean: 0.04 },
-            { code: "OULO", fullName: "OULOPHYLLIA (OULO)", subCategory: "OULOPHYLLIA (OULO)", majorCategory: "FAVIIDAE", deep: 0, shallow: 0.08, mean: 0.04 },
-            { code: "LOB", fullName: "LOBOPHYLLIA (LOB)", subCategory: "LOBOPHYLLIA (LOB)", majorCategory: "MUSSIDAE", deep: 0, shallow: 0.31, mean: 0.16 },
-            { code: "SER", fullName: "SERIATOPORA (SER)", subCategory: "SERIATOPORA (SER)", majorCategory: "POCILLOPORIDAE", deep: 0, shallow: 0.08, mean: 0.04 },
-            { code: "GONIO", fullName: "GONIOPORA (GONIO)", subCategory: "GONIOPORA (GONIO)", majorCategory: "PORITIDAE", deep: 0.37, shallow: 0, mean: 0.18 },
-            { code: "PORB", fullName: "PORITES BRANCHING (PORB)", subCategory: "PORITES BRANCHING (PORB)", majorCategory: "PORITIDAE", deep: 0.37, shallow: 0, mean: 0.18 },
-            { code: "GAL", fullName: "GALAXEA (GAL)", subCategory: "GALAXEA (GAL)", majorCategory: "OCULINIDAE", deep: 0, shallow: 0.15, mean: 0.08 }
+            { code: "CMR", fullName: "FUNGIA (CMR)", subCategory: "FUNGIA (CMR)", majorCategory: "FUNGIIDAE", deep: 1.11, shallow: 0.23, mean: 0.67 }
         ];
 
         const methodologies = ['Point Intercept Transect', 'Line Intercept Transect', 'Photo Quadrat', 'Video Transect'];
@@ -2116,10 +2077,9 @@
         }
 
         // ============================================
-        // UPDATED: DISPLAY RECTANGLES (connecting Shallow + Deep transects)
+        // DISPLAY COLORED RECTANGLES for General Santos transects
         // ============================================
         function displayTransectLines() {
-            // Remove existing transect layer if any
             if (transectLayerGroup) {
                 map.removeLayer(transectLayerGroup);
             }
@@ -2128,50 +2088,58 @@
             
             transectLayerGroup = L.layerGroup();
             
-            // Loop through each rectangle definition
             gensanTransectRectangles.forEach(rect => {
-                // Get the four corners of the rectangle:
-                // p1 = shallow start, p2 = shallow end, p3 = deep end, p4 = deep start
                 const shallowStart = rect.shallow[0];
                 const shallowEnd = rect.shallow[1];
                 const deepStart = rect.deep[0];
                 const deepEnd = rect.deep[1];
                 
-                // Create rectangle polygon coordinates (closed loop)
                 const rectangleCoords = [
-                    [shallowStart[1], shallowStart[0]],  // shallow start (lat, lng)
-                    [shallowEnd[1], shallowEnd[0]],      // shallow end
-                    [deepEnd[1], deepEnd[0]],            // deep end
-                    [deepStart[1], deepStart[0]],        // deep start
-                    [shallowStart[1], shallowStart[0]]   // back to start to close
+                    [shallowStart[1], shallowStart[0]],
+                    [shallowEnd[1], shallowEnd[0]],
+                    [deepEnd[1], deepEnd[0]],
+                    [deepStart[1], deepStart[0]],
+                    [shallowStart[1], shallowStart[0]]
                 ];
                 
-                // Find latest assessment for this barangay to get coral cover color
                 let latestAssessment = allAssessments
                     .filter(a => a.barangay === rect.barangay && a.municipality === 'General Santos')
                     .sort((a, b) => new Date(b.assessmentDate) - new Date(a.assessmentDate))[0];
                 
                 let cover = latestAssessment ? latestAssessment.coralCover : 50;
-                let color = cover >= 65 ? '#2e7d32' : cover >= 45 ? '#4caf50' : cover >= 25 ? '#ffb74d' : '#f44336';
-                let fillColor = color + '40'; // Add transparency for fill
+                let color, fillColor;
                 
-                // Create polygon (rectangle)
+                if (cover >= 65) {
+                    color = '#2e7d32';
+                    fillColor = '#2e7d32';
+                } else if (cover >= 45) {
+                    color = '#4caf50';
+                    fillColor = '#4caf50';
+                } else if (cover >= 25) {
+                    color = '#ffb74d';
+                    fillColor = '#ffb74d';
+                } else {
+                    color = '#f44336';
+                    fillColor = '#f44336';
+                }
+                
                 const rectangle = L.polygon(rectangleCoords, {
                     color: color,
                     weight: 3,
                     opacity: 0.9,
                     fillColor: fillColor,
-                    fillOpacity: 0.3,
+                    fillOpacity: 0.5,
                     smoothFactor: 1
                 });
                 
-                // Add popup with transect information
+                let healthText = cover >= 65 ? 'Excellent' : cover >= 45 ? 'Good' : cover >= 25 ? 'Fair' : 'Poor';
+                
                 rectangle.bindPopup(`
-                    <div style="font-family: 'Poppins', sans-serif; min-width: 200px;">
+                    <div style="font-family: 'Poppins', sans-serif; min-width: 220px;">
                         <strong>${rect.name}</strong><br>
-                        <span style="color: ${color};">■</span> Coral Cover: <strong>${cover}%</strong><br>
+                        <span style="color: ${color};">■</span> Coral Cover: <strong>${cover}% (${healthText})</strong><br>
                         <small>Barangay: ${rect.barangay}</small><br>
-                        <small>📏 Rectangle shows Shallow + Deep transect area</small>
+                        <small>📏 Transect rectangle (Shallow + Deep zones)</small>
                     </div>
                 `);
                 
@@ -2179,7 +2147,7 @@
             });
             
             transectLayerGroup.addTo(map);
-            console.log(`Displayed ${gensanTransectRectangles.length} transect rectangles on the map`);
+            console.log(`Displayed ${gensanTransectRectangles.length} colored transect rectangles`);
         }
         
         function toggleTransects() {
@@ -2199,7 +2167,7 @@
                 toast.style.borderRadius = '8px';
                 toast.style.zIndex = '10000';
                 toast.style.fontSize = '12px';
-                toast.innerHTML = '<i class="fas fa-draw-polygon"></i> Transect rectangles visible for General Santos';
+                toast.innerHTML = '<i class="fas fa-draw-polygon"></i> Colored transect rectangles visible';
                 document.body.appendChild(toast);
                 setTimeout(() => toast.remove(), 3000);
             } else {
@@ -2242,7 +2210,7 @@
                 toast.style.borderRadius = '8px';
                 toast.style.zIndex = '10000';
                 toast.style.fontSize = '12px';
-                toast.innerHTML = '<i class="fas fa-crosshairs"></i> Map view filter activated - statistics update when you pan/zoom';
+                toast.innerHTML = '<i class="fas fa-crosshairs"></i> Map view filter activated';
                 document.body.appendChild(toast);
                 setTimeout(() => toast.remove(), 3000);
                 
@@ -2265,7 +2233,7 @@
                 toast.style.borderRadius = '8px';
                 toast.style.zIndex = '10000';
                 toast.style.fontSize = '12px';
-                toast.innerHTML = '<i class="fas fa-globe"></i> Map view filter deactivated - showing all data';
+                toast.innerHTML = '<i class="fas fa-globe"></i> Map view filter deactivated';
                 document.body.appendChild(toast);
                 setTimeout(() => toast.remove(), 3000);
                 
@@ -2748,7 +2716,6 @@
             const filtered = getFilteredAssessments();
             addMarkersToCluster(filtered);
             updateFilterIndicator();
-            // Refresh transects if they are visible
             if (showTransects) {
                 displayTransectLines();
             }
